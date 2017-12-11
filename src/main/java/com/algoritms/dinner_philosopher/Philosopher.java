@@ -4,10 +4,10 @@ import static java.lang.String.format;
 import static java.lang.System.nanoTime;
 
 public class Philosopher extends Thread {
-    private static final int RANDOM_FACTOR = 10;
+    protected static final int RANDOM_FACTOR = 10;
     private String philosopherName;
-    private final Fork leftFork;
-    private final Fork rightFork;
+    protected final Fork leftFork;
+    protected final Fork rightFork;
 
     public Philosopher(String philosopherName, Fork leftFork, Fork rightFork) {
         this.leftFork = leftFork;
@@ -36,32 +36,34 @@ public class Philosopher extends Thread {
         }
     }
 
-    private void eat() throws InterruptedException {
+    protected void eat() throws InterruptedException {
         System.out.println(format("%s: to eat, time '%s'", toString(), nanoTime()));
         Thread.sleep(((int) (Math.random() * RANDOM_FACTOR)));
     }
 
-    private void think() throws InterruptedException {
+    protected void think() throws InterruptedException {
         System.out.println(format("%s: to think, time '%s'", toString(), nanoTime()));
         Thread.sleep(((int) (Math.random() * RANDOM_FACTOR)));
     }
 
-    private void getLeftFork() throws InterruptedException {
+    public int getLeftFork() throws InterruptedException {
         System.out.println(format("%s: get left fork '%s', time '%s'", toString(), leftFork.toString(), nanoTime()));
         Thread.sleep(((int) (Math.random() * RANDOM_FACTOR)));
+        return 1;
     }
 
-    private void getRightFork() throws InterruptedException {
+    public int getRightFork() throws InterruptedException {
         System.out.println(format("%s: get right fork '%s', time '%s'", toString(), rightFork.toString(), nanoTime()));
         Thread.sleep(((int) (Math.random() * RANDOM_FACTOR)));
+        return 1;
     }
 
-    private void putRightFork() throws InterruptedException {
+    public void putRightFork() throws InterruptedException {
         System.out.println(format("%s: put right fork '%s', time '%s'", toString(), leftFork.toString(), nanoTime()));
         Thread.sleep(((int) (Math.random() * RANDOM_FACTOR)));
     }
 
-    private void putLeftFork() throws InterruptedException {
+    public void putLeftFork() throws InterruptedException {
         System.out.println(format("%s: put left fork '%s', time '%s'", toString(), leftFork.toString(), nanoTime()));
         Thread.sleep(((int) (Math.random() * RANDOM_FACTOR)));
     }

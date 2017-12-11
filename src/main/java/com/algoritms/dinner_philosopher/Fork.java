@@ -1,6 +1,6 @@
 package com.algoritms.dinner_philosopher;
 
-public class Fork {
+public class Fork implements Comparable<Fork> {
     private String id;
 
     public Fork(String id) {
@@ -18,5 +18,10 @@ public class Fork {
     @Override
     public String toString() {
         return id;
+    }
+
+    @Override
+    public int compareTo(Fork other) {
+        return this.getId().compareTo(other.getId());
     }
 }
