@@ -10,10 +10,7 @@ public class Node {
     private boolean leaf;
     private Node parent;
 
-    private Node(){
-    }
-
-    Node(float[] coords, float[] dimensions, boolean leaf) {
+    public Node(float[] coords, float[] dimensions, boolean leaf) {
         if (coords == null) {
             throw new IllegalArgumentException("Coords can't null");
         }

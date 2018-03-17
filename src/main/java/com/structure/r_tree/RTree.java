@@ -4,7 +4,7 @@ import java.util.*;
 
 import static com.structure.r_tree.RTree.Type.LINEAR;
 
-//Todo add tests
+//Todo add tests, all operations
 public class RTree<T> {
     private static final float DIM_FACTOR = -2.0f;
     private static final float FUDGE_FACTOR = 1.001f;
@@ -131,19 +131,43 @@ public class RTree<T> {
     private void condenseTree(Node removedTree) {
         Node currentNode = removedTree;
         Set<Node> nodeSet = new HashSet<>();
-        while (currentNode != root) { //TOdo
+        while (currentNode != root) {
             if (currentNode.isLeaf() && (currentNode.getChildren().size() < minEntries)) {
                 nodeSet.addAll(currentNode.getChildren());
                 currentNode.getParent().getChildren().remove(currentNode);
             } else if (!currentNode.isLeaf() && (currentNode.getChildren().size() < minEntries)) {
-                List<Node> toVisit = new LinkedList<>(currentNode.getChildren());
+                Deque<Node> toVisit = new LinkedList<>(currentNode.getChildren());
                 while (!toVisit.isEmpty()) {
-                    //Todo
+                    Node next = toVisit.pop();
+                    if (next.isLeaf()) {
+                        nodeSet.addAll(next.getChildren());
+                    } else {
+                        toVisit.addAll(next.getChildren());
+                    }
                 }
+                currentNode.getParent().getChildren().remove(currentNode);
             } else {
-
+                tighten(currentNode);
             }
+            currentNode = currentNode.getParent();
         }
+
+        if (root.getChildren().size() == 0) {
+            root = buildRoot(true);
+        } else if ((root.getChildren().size() == 1) && (!root.isLeaf())) {
+            root = root.getChildren().get(0);
+            root.setParent(null);
+        } else {
+            tighten(root);
+        }
+
+        /*for (Node ne : nodeSet) {
+            @SuppressWarnings("unchecked")
+            Entry<T> e = (Entry<T>) ne;
+            insert(e.coords, e.dimensions, e.entry);
+        }
+        size -= q.size();*/
+        //Todo
     }
 
     private void tighten(Node... nodes) {
@@ -251,6 +275,140 @@ public class RTree<T> {
             }
             return null;
         }
+    }
+
+    //Todo test it
+    private void adjustTree(Node node, Node otherNode) {
+        if (node == root) {
+            if (otherNode != null) {
+                root = buildRoot(false);
+                root.getChildren().add(node);
+                node.setParent(root);
+                root.getChildren().add(otherNode);
+                otherNode.setParent(root);
+            }
+            tighten(root);
+            return;
+        }
+        tighten(node);
+
+        if (otherNode != null) {
+            tighten(otherNode);
+            if (node.getParent().getChildren().size() > maxEntries) {
+                Node[] splits = splitNode(node.getParent());
+                adjustTree(splits[0], splits[1]);
+            }
+        }
+//Todo
+        if (node.getParent() != null) {
+            adjustTree(node.getParent(), null);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Node[] splitNode(Node node) {
+        Node[] nn = new Node[]{node, new Node(node.getCoords(), node.getDimensions(), node.isLeaf())};
+        nn[1].setParent(node.getParent());
+        if (nn[1].getParent() != null) {
+            nn[1].getParent().getChildren().add(nn[1]);
+        }
+        LinkedList<Node> nodeList = new LinkedList<>(node.getChildren());
+        node.getChildren().clear();
+        Node[] nodeArr = type == LINEAR ? lPickSeeds(nodeList) : qPickSeeds(nodeList);
+        //Todo
+    }
+
+    @SuppressWarnings("unchecked")
+    private Node[] lPickSeeds(List<Node> nodeList) {
+        Node[] bestPair = new Node[2];
+        boolean foundBestPair = false;
+        float bestSep = 0.0f;
+        for (int i = 0; i < dimensionSize; i++) {
+            float dimLb = Float.MAX_VALUE, dimMinUb = Float.MAX_VALUE;
+            float dimUb = -1.0f * Float.MAX_VALUE, dimMaxLb = -1.0f * Float.MAX_VALUE;
+            Node nMaxLb = null, nMinUb = null;
+            for (Node node : nodeList) {
+                if (node.getCoords()[i] < dimLb) {
+                    dimLb = node.getCoords()[i];
+                }
+                if (node.getDimensions()[i] + node.getCoords()[i] > dimUb) {
+                    dimUb = node.getDimensions()[i] + node.getCoords()[i];
+                }
+                if (node.getCoords()[i] > dimMaxLb) {
+                    dimMaxLb = node.getCoords()[i];
+                    nMaxLb = node;
+                }
+                if (node.getDimensions()[i] + node.getCoords()[i] < dimMinUb) {
+                    dimMinUb = node.getDimensions()[i] + node.getCoords()[i];
+                    nMinUb = node;
+                }
+            }
+            float sep = (nMaxLb == nMinUb) ? -1.0f
+                    : Math.abs((dimMinUb - dimMaxLb) / (dimUb - dimLb));
+            if (sep >= bestSep) {
+                bestPair[0] = nMaxLb;
+                bestPair[1] = nMinUb;
+                bestSep = sep;
+                foundBestPair = true;
+            }
+        }
+        if (!foundBestPair) {
+            bestPair = new Node[]{nodeList.get(0), nodeList.get(1)};
+        }
+        nodeList.remove(bestPair[0]);
+        nodeList.remove(bestPair[1]);
+        return bestPair;
+    }
+
+    private Node lPickNext(LinkedList<Node> nodeList) {
+        return nodeList.pop();
+    }
+
+    @SuppressWarnings("unchecked")
+    private Node[] qPickSeeds(LinkedList<Node> nodeList) {
+        Node[] bestPair = new Node[2];
+        float maxWaste = -1.0f * Float.MAX_VALUE;
+        for (Node outerNode : nodeList) {
+            for (Node innerNode : nodeList) {
+                if (outerNode == innerNode) {
+                    continue;
+                }
+                float n1a = getArea(outerNode.getDimensions());
+                float n2a = getArea(innerNode.getDimensions());
+                float ja = 1.0f;
+                for (int i = 0; i < dimensionSize; i++) {
+                    float jc0 = Math.min(outerNode.getCoords()[i], innerNode.getCoords()[i]);
+                    float jc1 = Math.max(outerNode.getCoords()[i] + outerNode.getDimensions()[i], innerNode.getCoords()[i] + innerNode.getDimensions()[i]);
+                    ja *= (jc1 - jc0);
+                }
+                float waste = ja - n1a - n2a;
+                if (waste > maxWaste) {
+                    maxWaste = waste;
+                    bestPair[0] = outerNode;
+                    bestPair[1] = innerNode;
+                }
+            }
+        }
+        nodeList.remove(bestPair[0]);
+        nodeList.remove(bestPair[1]);
+        return bestPair;
+    }
+
+    private Node qPickNext(LinkedList<Node> nodeList, Node[] nodeArr) {
+        float maxDiff = -1.0f * Float.MAX_VALUE;
+        Node nextC = null;
+        for (Node c : nodeList) {
+            float n0Exp = getRequiredExpansion(nodeArr[0].getCoords(), nodeArr[0].getDimensions(), c);
+            float n1Exp = getRequiredExpansion(nodeArr[1].getCoords(), nodeArr[1].getDimensions(), c);
+            float diff = Math.abs(n1Exp - n0Exp);
+            if (diff > maxDiff) {
+                maxDiff = diff;
+                nextC = c;
+            }
+        }
+        assert (nextC != null) : "No node selected from qPickNext";
+        nodeList.remove(nextC);
+        return nextC;
     }
 
     public int getMaxEntries() {
