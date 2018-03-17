@@ -124,8 +124,16 @@ public class RTree<T> {
 
         if (removed != null) {
             condenseTree(findNode);
-//TOdo
+            size--;
         }
+        if (size == 0) {
+            root = buildRoot(true);
+        }
+        return (removed != null);
+    }
+
+    public boolean delete(final float[] coords, final T entry) {
+        return delete(coords, dimensionArray, entry);
     }
 
     private void condenseTree(Node removedTree) {
@@ -161,13 +169,12 @@ public class RTree<T> {
             tighten(root);
         }
 
-        /*for (Node ne : nodeSet) {
+        for (Node ne : nodeSet) {
             @SuppressWarnings("unchecked")
             Entry<T> e = (Entry<T>) ne;
-            insert(e.coords, e.dimensions, e.entry);
+            insert(e.getCoords(), e.getDimensions(), e.entry);
         }
-        size -= q.size();*/
-        //Todo
+        size -= nodeSet.size();
     }
 
     private void tighten(Node... nodes) {
@@ -200,6 +207,10 @@ public class RTree<T> {
             System.arraycopy(minCoords, 0, node.getCoords(), 0, dimensionSize);
             System.arraycopy(maxCoords, 0, node.getDimensions(), 0, dimensionSize);
         }
+    }
+
+    public void clear() {
+        root = buildRoot(true);
     }
 
     private Node chooseLeaf(Node node, Entry<T> entry) {
@@ -277,7 +288,6 @@ public class RTree<T> {
         }
     }
 
-    //Todo test it
     private void adjustTree(Node node, Node otherNode) {
         if (node == root) {
             if (otherNode != null) {
@@ -299,7 +309,7 @@ public class RTree<T> {
                 adjustTree(splits[0], splits[1]);
             }
         }
-//Todo
+
         if (node.getParent() != null) {
             adjustTree(node.getParent(), null);
         }
@@ -307,15 +317,80 @@ public class RTree<T> {
 
     @SuppressWarnings("unchecked")
     private Node[] splitNode(Node node) {
-        Node[] nn = new Node[]{node, new Node(node.getCoords(), node.getDimensions(), node.isLeaf())};
-        nn[1].setParent(node.getParent());
-        if (nn[1].getParent() != null) {
-            nn[1].getParent().getChildren().add(nn[1]);
+        Node[] nodeArray = new Node[]{node, new Node(node.getCoords(), node.getDimensions(), node.isLeaf())};
+        nodeArray[1].setParent(node.getParent());
+        if (nodeArray[1].getParent() != null) {
+            nodeArray[1].getParent().getChildren().add(nodeArray[1]);
         }
         LinkedList<Node> nodeList = new LinkedList<>(node.getChildren());
         node.getChildren().clear();
-        Node[] nodeArr = type == LINEAR ? lPickSeeds(nodeList) : qPickSeeds(nodeList);
-        //Todo
+        Node[] processedArray = type == LINEAR ? lPickSeeds(nodeList) : qPickSeeds(nodeList);
+        nodeArray[0].getChildren().add(processedArray[0]);
+        nodeArray[1].getChildren().add(processedArray[1]);
+        tighten(nodeArray);
+        while (!nodeList.isEmpty()) {
+            if ((nodeArray[0].getChildren().size() >= minEntries)
+                    && (nodeArray[1].getChildren().size() + nodeList.size() == minEntries)) {
+                nodeArray[1].getChildren().addAll(nodeList);
+                nodeList.clear();
+                tighten(nodeArray); // Not sure this is required.
+                return nodeArray;
+            } else if ((nodeArray[1].getChildren().size() >= minEntries)
+                    && (nodeArray[0].getChildren().size() + nodeList.size() == minEntries)) {
+                nodeArray[0].getChildren().addAll(nodeList);
+                nodeList.clear();
+                tighten(nodeArray); // Not sure this is required.
+                return nodeArray;
+            }
+            Node c = type == LINEAR ? lPickNext(nodeList) : qPickNext(nodeList, nodeArray);
+            Node preferred;
+            float e0 = getRequiredExpansion(nodeArray[0].getCoords(), nodeArray[0].getDimensions(), c);
+            float e1 = getRequiredExpansion(nodeArray[1].getCoords(), nodeArray[1].getDimensions(), c);
+            if (e0 < e1) {
+                preferred = nodeArray[0];
+            } else if (e0 > e1) {
+                preferred = nodeArray[1];
+            } else {
+                float a0 = getArea(nodeArray[0].getDimensions());
+                float a1 = getArea(nodeArray[1].getDimensions());
+                if (a0 < a1) {
+                    preferred = nodeArray[0];
+                } else if (e0 > a1) {
+                    preferred = nodeArray[1];
+                } else {
+                    if (nodeArray[0].getChildren().size() < nodeArray[1].getChildren().size()) {
+                        preferred = nodeArray[0];
+                    } else if (nodeArray[0].getChildren().size() > nodeArray[1].getChildren().size()) {
+                        preferred = nodeArray[1];
+                    } else {
+                        preferred = nodeArray[(int) Math.round(Math.random())];
+                    }
+                }
+            }
+            preferred.getChildren().add(c);
+            tighten(preferred);
+        }
+        return nodeArray;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void insert(final float[] coords, final float[] dimensions, final T entry) {
+        checkInputParams(coords, dimensions);
+        Entry newEntry = new Entry(coords, dimensions, true, entry);
+        Node node = chooseLeaf(root, newEntry);
+        node.getChildren().add(newEntry);
+        size++;
+        newEntry.setParent(node);
+        if (node.getChildren().size() > maxEntries) {
+            Node[] splits = splitNode(node);
+            adjustTree(splits[0], splits[1]);
+        } else {
+            adjustTree(node, null);
+        }
+    }
+
+    public void insert(final float[] coords, final T entry) {
+        insert(coords, dimensionArray, entry);
     }
 
     @SuppressWarnings("unchecked")
