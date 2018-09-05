@@ -8,6 +8,8 @@ import static com.structure.r_tree.RTree.Type.LINEAR;
 public class RTree<T> {
     private static final float DIM_FACTOR = -2.0f;
     private static final float FUDGE_FACTOR = 1.001f;
+    private static final int ELEM_WIDTH = 150;
+    private static final int ELEM_HEIGHT = 120;
 
     private int maxEntries;
     private int minEntries;
@@ -484,6 +486,11 @@ public class RTree<T> {
         assert (nextC != null) : "No node selected from qPickNext";
         nodeList.remove(nextC);
         return nextC;
+    }
+
+    public String visualize() {
+        //Todo
+        return "";
     }
 
     public int getMaxEntries() {
