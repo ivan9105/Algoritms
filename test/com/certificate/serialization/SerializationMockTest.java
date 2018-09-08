@@ -29,6 +29,31 @@ public class SerializationMockTest implements Serializable {
         Assert.assertTrue(content.contains("com.certificate.serialization.SerializationMockTest"));
     }
 
+    @Test
+    public void testSerializeWithNotImplementSerializableChildClass() {
+        boolean hasException = false;
+        String exceptionClass = "";
+        HotelNotSerializableChild h = new HotelNotSerializableChild();
+        try {
+            FileOutputStream fos = new FileOutputStream("HotelNotSerializableChild.dat");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(h);
+            oos.close();
+        } catch(Exception ex) {
+            hasException = true;
+            exceptionClass = ex.getClass().getCanonicalName();
+        }
+        Assert.assertTrue(hasException);
+        Assert.assertEquals(exceptionClass, "java.io.NotSerializableException");
+    }
+
+    private class HotelNotSerializableChild implements Serializable {
+        private RoomNotSerializable room = new RoomNotSerializable();
+    }
+
+    private class RoomNotSerializable {
+    }
+
     private class Hotel implements Serializable {
         private Room room = new Room();
     }
