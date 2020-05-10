@@ -8,6 +8,12 @@ import java.util.function.Consumer;
 import static com.patterns.behavioral.template_method.TransactionUtils.runInTransaction;
 
 public class TemplateMethodUsage {
+    /**
+     * это поведенческий паттерн проектирования,
+     * который определяет скелет алгоритма,
+     * перекладывая ответственность за некоторые его шаги на подклассы.
+     * Паттерн позволяет подклассам переопределять шаги алгоритма, не меняя его общей структуры.
+     */
     public static void main(String[] args) {
         TemplateMethodUsage executor = new TemplateMethodUsage();
         executor.execute();

@@ -4,11 +4,12 @@ import lombok.SneakyThrows;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.util.stream.IntStream;
+
+import static java.util.stream.IntStream.range;
 
 public class Starvation {
     public static void main(String[] args) {
-        IntStream.range(0, 10).forEach(iteration -> new Thread(() -> new Worker().work()).start());
+        range(0, 10).forEach(iteration -> new Thread(() -> new Worker().work()).start());
     }
 
     /**

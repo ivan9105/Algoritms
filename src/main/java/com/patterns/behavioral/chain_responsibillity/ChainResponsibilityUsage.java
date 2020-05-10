@@ -1,6 +1,13 @@
 package com.patterns.behavioral.chain_responsibillity;
 
 public class ChainResponsibilityUsage {
+    /**
+     * Пример Package org.springframework.web.filter
+     *
+     * поведенческий паттерн проектирования, который позволяет передавать запросы
+     * последовательно по цепочке обработчиков. Каждый последующий обработчик решает,
+     * может ли он обработать запрос сам и стоит ли передавать запрос дальше по цепи.
+     */
     public static void main(String[] args) {
         ChainResponsibilityUsage executor = new ChainResponsibilityUsage();
         executor.execute();

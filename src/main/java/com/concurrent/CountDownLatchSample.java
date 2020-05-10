@@ -2,29 +2,38 @@ package com.concurrent;
 
 import java.util.concurrent.CountDownLatch;
 
+import static java.lang.Thread.sleep;
+
 public class CountDownLatchSample {
-    private static final CountDownLatch LATCH = new CountDownLatch(11);
-    private static final int THRESHOLD = 5000;
+    //TODO здесь остановился
+    //TODO Lock support Park
+    //TOdo time adjuster
+    //Todo treefying дерева разобраться поподробнее
+
+
+    //TODO кольцо кролика на низком уровне
+    /*
+    создать две точки доступа: WorkExchange и RetryExchange;
+создать очередь WorkQueue с параметрами x-dead-letter-exchange=RetryExchange и связать ее c WorkExchange;
+создать очередь RetryQueue с параметрами x-dead-letter-exchange=WorkExchange и x-message-ttl=300000, и связать ее c RetryExchange.
+     */
+    private static final CountDownLatch LATCH = new CountDownLatch(3);
+    private static final int THRESHOLD = 500;
 
     public static void main(String[] args) throws InterruptedException {
         for (int i = 0; i < 8; i++) {
             new Thread(new PlaceHolder(i)).start();
-            Thread.sleep(1000);
+            sleep(300);
         }
 
-        while (LATCH.getCount() > 3) {
-            Thread.sleep(100);
-        }
-
-        Thread.sleep(1000);
         System.out.println("Operation 1");
         LATCH.countDown();
-        Thread.sleep(1000);
+        sleep(1000);
         System.out.println("Operation 2");
         LATCH.countDown();
-        Thread.sleep(1000);
-        System.out.println("Threads start");
+        sleep(1000);
         LATCH.countDown();
+        System.out.println("Threads continue execution");
     }
 
     public static class PlaceHolder implements Runnable {
@@ -38,9 +47,8 @@ public class CountDownLatchSample {
         public void run() {
             try {
                 System.out.println(String.format("Place holder '%s' is ready", id));
-                LATCH.countDown();
                 LATCH.await();
-                Thread.sleep(THRESHOLD);
+                sleep(THRESHOLD);
                 System.out.println(String.format("Place holder '%s' releases", id));
             } catch (InterruptedException ignore) {
             }

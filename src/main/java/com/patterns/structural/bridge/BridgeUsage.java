@@ -1,5 +1,9 @@
 package com.patterns.structural.bridge;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,14 +15,142 @@ public class BridgeUsage {
      * можно будет реализовавать 2 иерархии независимо друг от друга
      */
     public static void main(String[] args) {
+//        reportExample();
+        deviceControlExample();
+    }
+
+    private static void deviceControlExample() {
+        /**
+         * Две иерарихии
+         * пульты
+         * и девайсы которыми мы можем управлять через них
+         */
+        Device device = new TV();
+        Remote remote = new AdvancedRemote(device);
+    }
+
+    static class AdvancedRemote extends Remote {
+
+        private Integer max;
+        private Integer min;
+
+        public AdvancedRemote(Device device) {
+            super(device);
+
+            defineChannelBounds();
+        }
+
+        @Override
+        void channelDown() {
+            Integer channel = device.getChannel();
+            device.setChannel(channel.equals(min) ? max : --channel);
+        }
+
+        @Override
+        void channelUp() {
+            Integer channel = device.getChannel();
+            device.setChannel(channel.equals(max) ? min : ++channel);
+        }
+
+        void defineChannelBounds() {
+            min = 0;
+            max = 99;
+        }
+    }
+
+    @AllArgsConstructor
+    static class Remote {
+        protected Device device;
+
+        void togglePower() {
+            if (device.isEnabled()) {
+                device.disable();
+            } else {
+                device.enable();
+            }
+        }
+
+        void volumeDown() {
+            device.setVolume(device.getVolume() - 0.3);
+        }
+
+        void volumeUp() {
+            device.setVolume(device.getVolume() + 0.3);
+        }
+
+        void channelDown() {
+            device.setChannel(device.getChannel() - 1);
+        }
+
+        void channelUp() {
+            device.setChannel(device.getChannel() + 1);
+        }
+    }
+
+    interface Device {
+        boolean isEnabled();
+
+        void enable();
+
+        void disable();
+
+        Double getVolume();
+
+        void setVolume(Double volume);
+
+        Integer getChannel();
+
+        void setChannel(Integer channel);
+    }
+
+    @Getter
+    @Setter
+    abstract static class DeviceImpl implements Device {
+        private boolean enable;
+        private Double volume;
+        private Integer channel;
+
+        @Override
+        public boolean isEnabled() {
+            return enable;
+        }
+
+        @Override
+        public void enable() {
+            enable = true;
+        }
+
+        @Override
+        public void disable() {
+            enable = false;
+        }
+    }
+
+    static class TV extends DeviceImpl {
+    }
+
+    static class Radio extends DeviceImpl {
+    }
+
+    private static void reportExample() {
+        /**
+         *
+         * Тут две иерархии
+         * Первая
+         * data source (Sql, Elastic, Ws - внешний сервис например)
+         *
+         * Вторая
+         * report engine
+         * мы можем использовать html/pdf report engine
+         */
         Template template = new Template();
         ExternalWSSource wsSource = new ExternalWSSource();
         ElasticSearchSource elasticSource = new ElasticSearchSource();
 
-        HtmlReportEngine<ExternalWSSource> htmlWithXmlSource = new HtmlReportEngine<>(template, wsSource);
+        ReportEngine<ExternalWSSource> htmlWithXmlSource = new HtmlReportEngine<>(template, wsSource);
         htmlWithXmlSource.generateReport();
 
-        HtmlReportEngine<ElasticSearchSource> htmlWithJsonSource = new HtmlReportEngine<>(template, elasticSource);
+        ReportEngine<ElasticSearchSource> htmlWithJsonSource = new HtmlReportEngine<>(template, elasticSource);
         htmlWithJsonSource.generateReport();
     }
 }
@@ -93,7 +225,9 @@ abstract class ReportEngine<T extends Source> {
 
 abstract class Source {
     protected Script script;
+
     abstract Map<String, Object> getData();
+
     abstract String getType();
 
     public Script getScript() {

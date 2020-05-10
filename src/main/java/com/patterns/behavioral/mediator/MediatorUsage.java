@@ -1,6 +1,6 @@
 package com.patterns.behavioral.mediator;
 
-import lombok.Data;
+import lombok.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,10 +10,80 @@ import static java.lang.String.format;
 public class MediatorUsage {
     public static void main(String[] args) {
         MediatorUsage executor = new MediatorUsage();
-        executor.execute();
+        executor.example1();
     }
 
-    private void execute() {
+    @AllArgsConstructor
+    @Builder
+    static class Dialog implements Mediator {
+        private String title;
+        private Checkbox loginOrRegisterChkBx;
+        private TextInput loginInput, passwordInput;
+        private Label loginLabel, passwordLabel;
+        private Button closeButton;
+
+        @Override
+        public void notify(Component sender, String event) {
+            if (sender == loginOrRegisterChkBx && event.equals("check")) {
+                if (loginOrRegisterChkBx.checked) {
+                    //do something
+                }
+            } else if (sender == closeButton && event.equals("keypress")) {
+                //close dialog
+            }
+        }
+    }
+
+    interface Mediator {
+        void notify(Component sender, String event);
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    static class Component {
+        private final Mediator mediator;
+
+        void keyPress() {
+            doNotify("keypress");
+        }
+
+        void click() {
+            doNotify("onclick");
+        }
+
+        private void doNotify(String event) {
+            mediator.notify(this, event);
+        }
+    }
+
+    static class Label extends Component {
+        public Label(Mediator mediator) {
+            super(mediator);
+        }
+    }
+
+    static class Checkbox extends Component {
+        private boolean checked;
+
+        public Checkbox(Mediator mediator) {
+            super(mediator);
+        }
+    }
+
+    static class TextInput extends Component {
+        public TextInput(Mediator mediator) {
+            super(mediator);
+        }
+    }
+
+    static class Button extends Component {
+        public Button(Mediator mediator) {
+            super(mediator);
+        }
+    }
+
+    private void example1() {
         Conversation conversation = new Conversation();
         Participant firstParticipant = conversation.register("Вася");
         Participant secondParticipant = conversation.register("Артем");

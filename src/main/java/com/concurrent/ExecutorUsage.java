@@ -25,6 +25,7 @@ public class ExecutorUsage {
 
     private void execute() {
         //для callable используется future get approach
+        runCachedThreadPool();
     }
 
     private void caughtExceptionForRunnableTask() {

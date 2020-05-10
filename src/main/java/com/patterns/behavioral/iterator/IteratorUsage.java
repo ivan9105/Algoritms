@@ -7,6 +7,9 @@ import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableSet;
 
 public class IteratorUsage {
+    /**
+     * позволяет последовательно проитерироваться(обойти элементы) по любой структуре данных без раскрытия реализации
+     */
     public static void main(String[] args) {
         IteratorUsage executor = new IteratorUsage();
         executor.execute();

@@ -6,4 +6,5 @@ public class PrototypeUsage {
         Shape prototype = shape.prototype();
         System.out.println(shape.hashCode() == prototype.hashCode() && shape.equals(prototype) && shape != prototype);
     }
+
 }

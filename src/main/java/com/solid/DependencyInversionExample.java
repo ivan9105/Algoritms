@@ -13,6 +13,13 @@ import static java.util.Collections.singletonList;
 import static java.util.UUID.randomUUID;
 
 public class DependencyInversionExample {
+    /**
+     * Модули верхних уровней не должны зависеть от нижних
+     * например есть компонент data source
+     * есть верхнеуровневый компонент report generator
+     * даже если источник данных меняется
+     * это не влияет на результат report generator-a
+     */
     public static void main(String[] args) {
         DependencyInversionExample executor = new DependencyInversionExample();
         executor.execute();

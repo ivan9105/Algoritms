@@ -7,6 +7,11 @@ import java.util.List;
 import static java.util.Arrays.asList;
 
 public class StrategyUsage {
+    /**
+     * это поведенческий паттерн проектирования,
+     * который определяет семейство схожих алгоритмов и помещает каждый из них в собственный класс
+     * после чего алгоритмы можно взаимозаменять прямо во время исполнения программы.
+     */
     public static void main(String[] args) {
         StrategyUsage executor = new StrategyUsage();
         executor.execute();
