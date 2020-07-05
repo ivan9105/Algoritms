@@ -1,6 +1,10 @@
 package com.patterns.structural.adapter;
 
 public class AdapterUsage {
+    /**
+     * это структурный паттерн проектирования,
+     * который позволяет объектам с несовместимыми интерфейсами работать вместе.
+     */
     public static void main(String[] args) {
         AdapterUsage executor = new AdapterUsage();
         executor.execute();

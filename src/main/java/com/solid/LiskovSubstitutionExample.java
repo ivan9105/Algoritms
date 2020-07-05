@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * Поведение наследников должно быть эквивалентно поведению базовых классов
+ * Мы организовываем контракт не только на уровне входных п-ров но и на уровне возвращаемого результата
  */
 public class LiskovSubstitutionExample {
     public static void main(String[] args) {

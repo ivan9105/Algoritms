@@ -49,6 +49,7 @@ class SelectorClient {
         InetAddress localhost = getLocalHost();
         InetSocketAddress serverAddress = new InetSocketAddress(localhost, SelectorServer.PORT);
 
+        //открываем соединение с сервером, отправляется acceptable key
         try (SocketChannel channel = SocketChannel.open(serverAddress)) {
             System.out.println(format("Try to connect to %s:%s", serverAddress.getHostName(), serverAddress.getPort()));
             ByteBuffer writeBuffer = allocate(1024);
@@ -63,6 +64,7 @@ class SelectorClient {
             }
 
             while (true) {
+                //слушаем события
                 int readBytesSize = channel.read(readBuffer);
                 if (readBytesSize != 0) {
                     readBuffer.flip();
@@ -116,8 +118,10 @@ class SelectorServer {
                 SelectionKey key = keyIterator.next();
 
                 if (key.isAcceptable()) {
+                    //обрабатываем acceptable key из клиента
                     processAccept(channel);
                 } else if (key.isWritable()) {
+                    //обрабатываем события если приходит writable key
                     processWrite(key);
                 } else if (key.isReadable()) {
                     processRead(key);
@@ -162,6 +166,7 @@ class SelectorServer {
         ByteBuffer buffer = allocate(SONG.getBytes().length);
         clientChannel.read(buffer);
         String message = new String(buffer.array()).trim();
+        System.out.printf("Read:%s%n", message);
         if (message.length() > 0) {
             if (message.equalsIgnoreCase("*exit*")) {
                 clientChannel.close();

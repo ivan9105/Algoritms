@@ -7,6 +7,20 @@ import lombok.Data;
 import java.util.Collection;
 
 public class OpenCloseExample {
+    /**
+     * суть принципа
+     * позволить расширять поведение классов
+     * без изменения базового класса
+     *
+     * другими словами систему должна быть гибкой
+     * не должно быть гигансткой заплатки в одном методе принимающего базовый класс с кучей проверок instanceOf/switch - type
+     *
+     * в данном примере мы инкапсулировали логику в самом дто
+     *
+     * в случае исп-я в enterprise я бы заложился на поле type и сделал бы мэппинг на отдельные компоненты
+     * и вместо ShapeAreaCalculator который вызывал не Shape#calculateArea, вызывался бы ConcreteShapeCalculator
+     * и это бы соотвествовало бы данному принципу
+     */
     public static void main(String[] args) {
         OpenCloseExample executor = new OpenCloseExample();
         executor.execute();

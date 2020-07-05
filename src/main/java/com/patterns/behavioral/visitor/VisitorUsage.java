@@ -9,11 +9,17 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.patterns.behavioral.visitor.XmlPlaceCollectorVisitor.*;
+import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
 public class VisitorUsage {
+    /**
+     * поведенческий паттерн проектирования,
+     * который позволяет добавлять в программу новые операции,
+     * не изменяя классы объектов, над которыми эти операции могут выполняться.
+     */
     public static void main(String[] args) {
         VisitorUsage executor = new VisitorUsage();
         executor.execute();
@@ -141,7 +147,7 @@ class XmlPlaceCollectorVisitor {
         return Stream.of(getAttributeValue(element, VERTECES_ATTR_NAME).split(";"))
                 .map(vertexStr -> {
                     String[] arr = vertexStr.split(",");
-                    return new Vertex(Integer.valueOf(arr[0]), Integer.valueOf(arr[1]));
+                    return new Vertex(parseInt(arr[0]), parseInt(arr[1]));
                 })
                 .collect(Collectors.toList());
     }

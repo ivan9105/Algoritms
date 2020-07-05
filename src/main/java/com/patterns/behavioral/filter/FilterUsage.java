@@ -20,6 +20,9 @@ import static com.patterns.behavioral.filter.Sex.FEMALE;
 import static java.util.Arrays.asList;
 
 public class FilterUsage {
+    /**
+     * упрошенный вариант chain responsibility без решений и цепочек обработки
+     */
     public static void main(String[] args) {
         FilterUsage executor = new FilterUsage();
         executor.execute();

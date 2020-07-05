@@ -8,6 +8,10 @@ import com.patterns.generators.model.AbstractTextInput;
  * Абстрактная фабрика компонентов
  * каждая фабрика только знает и создаеет свои продукты
  * фабрики легко взаимозаменять
+ *
+ * порождающий паттерн проектирования,
+ * который позволяет создавать семейства связанных объектов,
+ * не привязываясь к конкретным классам создаваемых объектов.
  */
 public abstract class AbstractComponentFactory {
     public abstract AbstractCheckbox createCheckbox();

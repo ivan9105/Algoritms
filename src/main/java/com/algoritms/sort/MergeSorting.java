@@ -6,6 +6,10 @@ import java.util.Random;
 import static java.util.Arrays.copyOfRange;
 
 public class MergeSorting {
+    /**
+     * Делим массив на 2 части рекурсивно до тех пора пока делиться или threshold позволяет это сделать
+     * после рекурсивно делаем merge
+     */
     private int[] mergeSort(int[] array) {
         if (array.length < 2) {
             return array;

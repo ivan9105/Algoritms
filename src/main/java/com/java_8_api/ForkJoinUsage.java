@@ -5,6 +5,12 @@ import java.util.concurrent.RecursiveAction;
 import static java.lang.String.format;
 
 public class ForkJoinUsage {
+    /**
+     * в ForkJoinPool используется алгоритм "кражи работы"
+     * по факту поток в forkjoinpool имеет свою очередь задач
+     * когда очередь пуста, поток берет задачу из хвоста очереди другого занятого потока
+     * или из глобальной очереди на вход, поскольку именно здесь, вероятно, будут находиться самые большие части работы.
+     */
     public static void main(String[] args) {
         ForkJoinUsage executor = new ForkJoinUsage();
         executor.execute();
@@ -82,6 +88,7 @@ class SortAction extends RecursiveAction {
 
 
     private void split(int size) {
+        System.out.println(format("Current thread %s", Thread.currentThread().getId()));
         System.out.println(format("Запуск параллельной обработки. Start: %s, End: %s", start, end));
         SortAction leftAction = new SortAction(input, start, start + size / 2);
         leftAction.fork(); //left запускаем в отдельном потоке

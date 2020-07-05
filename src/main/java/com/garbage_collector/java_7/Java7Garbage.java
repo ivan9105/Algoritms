@@ -12,7 +12,7 @@ public class Java7Garbage {
 //    -XX:MaxPermSize Максимальный изначальный размер
 //    Xms/Xmx Максимальный и минимальный размер heap-a
 
-
+//TODO алгоритмы тож подробно разобраться схемку накидать чтоли
     public static void main(String[] args) {
         Java7Garbage sampler = new Java7Garbage();
 //        sampler.firstSample();

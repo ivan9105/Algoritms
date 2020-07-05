@@ -3,8 +3,13 @@ package com.concurrent;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ConcurrentLinkedBlockingQueueExample {
+    /**
+     * Суть в том что мы ограничивыем capacity для очереди
+     * и все потоки которые будут пытаться положить туда значения если ее размер >= 2
+     * будут ждать до тех пор пока очередь не освободиться для записи
+     */
     public static void main(String[] args) {
-        LinkedBlockingQueue<Integer> queue = new LinkedBlockingQueue<>(200);
+        LinkedBlockingQueue<Integer> queue = new LinkedBlockingQueue<>(2);
 
         Producer producer1 = new Producer(queue);
         producer1.start();

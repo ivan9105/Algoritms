@@ -40,6 +40,7 @@ public class CompositeUsage {
 
         html.getChildTags().add(body);
 
+        //по аналогии можно resize например сделать
         html.print();
     }
 }

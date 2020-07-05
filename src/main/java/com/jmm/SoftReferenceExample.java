@@ -19,6 +19,14 @@ public class SoftReferenceExample {
      */
     @SneakyThrows
     public static void main(String[] args) {
+//        example1();
+        Integer obj = 1;
+        //объект obj будет удален из памяти только в случае острой нехватки, в случае weakReference удален будет сразу
+        SoftReference softReference = new SoftReference(obj);
+        softReference = null;
+    }
+
+    private static void example1() {
         String instance = "123323";
         SoftReference<String> softReference = new SoftReference<>(instance);
         instance = null;

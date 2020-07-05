@@ -12,6 +12,12 @@ import java.util.Set;
 import static java.lang.String.format;
 
 public class ObserverUsage {
+    /**
+     * поведенческий паттерн проектирования,
+     * который создаёт механизм подписки,
+     * позволяющий одним объектам следить и реагировать на события,
+     * происходящие в других объектах.
+     */
     public static void main(String[] args) {
         ObserverUsage executor = new ObserverUsage();
         executor.execute();

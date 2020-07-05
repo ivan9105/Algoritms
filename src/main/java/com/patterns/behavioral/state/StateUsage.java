@@ -4,6 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class StateUsage {
+    /**
+     * поведенческий паттерн проектирования,
+     * который позволяет объектам менять поведение в зависимости от своего состояния.
+     * Извне создаётся впечатление, что изменился класс объекта.
+     *
+     * Другими словами мы не управляем состоянием, объект сам управляет своим состоянием
+     */
     public static void main(String[] args) {
         StateUsage executor = new StateUsage();
         executor.execute();

@@ -2,6 +2,7 @@ package com.concurrent;
 
 import java.util.concurrent.Semaphore;
 
+//TODO коммент как работает
 public class SemaphoreSample {
     private static final int PLACES_LIMIT = 5;
     private static final boolean[] PLACES_LIMIT_STATE = new boolean[PLACES_LIMIT];

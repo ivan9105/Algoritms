@@ -83,6 +83,13 @@ public class BufferUsage {
             }
         }
     }
+
+    @SneakyThrows
+    private void readFromSpecificPosition() {
+        try (FileChannel channel = new FileInputStream(FILE_NAME).getChannel()) {
+            //TODO channel set position записать например 10 первых строк, после остановиться записать 10 след и прочее
+        }
+    }
 }
 
 
