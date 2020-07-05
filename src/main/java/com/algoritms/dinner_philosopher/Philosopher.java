@@ -19,20 +19,23 @@ public class Philosopher extends Thread {
     @Override
     public void run() {
         try {
-            while (true) {
-                think();
-                synchronized (leftFork) {
-                    getLeftFork();
-                    synchronized (rightFork) {
-                        getRightFork();
-                        eat();
-                        putRightFork();
-                    }
-                    putLeftFork();
+            philosopherProcess();
+        } catch (InterruptedException ignore) {
+        }
+    }
+
+    protected void philosopherProcess() throws InterruptedException {
+        while (true) {
+            think();
+            synchronized (leftFork) {
+                getLeftFork();
+                synchronized (rightFork) {
+                    getRightFork();
+                    eat();
+                    putRightFork();
                 }
+                putLeftFork();
             }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
         }
     }
 

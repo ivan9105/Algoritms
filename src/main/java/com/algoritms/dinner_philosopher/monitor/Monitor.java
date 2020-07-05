@@ -8,7 +8,7 @@ import static java.lang.String.format;
 import static java.lang.System.nanoTime;
 
 public class Monitor {
-    private Lock mutex = new ReentrantLock();
+    private Lock lock = new ReentrantLock();
     private Condition[] conditions;
     private int size;
 
@@ -17,7 +17,7 @@ public class Monitor {
         this.conditions = new Condition[size];
 
         for (int i = 0; i < size; i++) {
-            conditions[i] = mutex.newCondition();
+            conditions[i] = lock.newCondition();
         }
     }
 
@@ -38,7 +38,7 @@ public class Monitor {
     }
 
     public void getForks(int id, MonitorFork leftFork, MonitorFork rightFork) {
-        mutex.lock();
+        lock.lock();
         try {
             while (!leftFork.isAvailability() || !rightFork.isAvailability()) {
                 conditions[id].await();
@@ -49,12 +49,12 @@ public class Monitor {
             getRightFork(id, rightFork);
         } catch (Exception ignore) {
         } finally {
-            mutex.unlock();
+            lock.unlock();
         }
     }
 
     public void putForks(int id, MonitorFork leftFork, MonitorFork rightFork) {
-        mutex.lock();
+        lock.lock();
         try {
             leftFork.setAvailability(true);
             rightFork.setAvailability(true);
@@ -64,7 +64,7 @@ public class Monitor {
             putLeftFork(id, leftFork);
             putRightFork(id, rightFork);
         } finally {
-            mutex.unlock();
+            lock.unlock();
         }
     }
 }

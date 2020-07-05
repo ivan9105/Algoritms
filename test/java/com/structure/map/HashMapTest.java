@@ -10,6 +10,8 @@ import static org.junit.Assert.assertEquals;
 
 public class HashMapTest {
 
+    //TODO parallel stream exception handling
+
     @Test
     public void treeNodeFindWithBadKey() {
         Map<KeyWithBadHashCodeAndEquals, Integer> map = new HashMap<>();
