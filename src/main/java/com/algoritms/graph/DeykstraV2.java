@@ -4,6 +4,7 @@ package com.algoritms.graph;
 import java.util.*;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +25,15 @@ class Node {
 @RequiredArgsConstructor
 class CalculatedNode {
     final int vertex, weight;
+}
+
+@Getter
+@RequiredArgsConstructor
+class ShortestPath {
+    private final int source;
+    private final int dest;
+    private final int cost;
+    private final List<Integer> route;
 }
 
 // Класс для представления graphического объекта
@@ -64,7 +74,7 @@ class Graph {
     }
 }
 
-class FloydWarshallAlgorithm {
+class DeykstraV2 {
     private static void getRoute(int[] prev, int i, List<Integer> route) {
         if (i >= 0) {
             getRoute(prev, prev[i], route);
@@ -73,15 +83,20 @@ class FloydWarshallAlgorithm {
     }
 
     //TODO выпил и сдклать возвращение метрицы
-    public static void findShortestPaths(Graph graph) {
+    public static int[][] findShortestPaths(Graph graph) {
         var nodes = graph.getNodes().keySet();
-        for (int node : nodes) {
+        var result = new int[nodes.size()][nodes.size()];
 
+        for (int node : nodes) {
+            var paths = findShortestPaths(graph, node);
+            paths.forEach(path -> result[path.getSource()][path.getDest()] = path.getCost());
         }
+
+        return result;
     }
 
     // Запускаем алгоритм Дейкстры на заданном Graph
-    public static void findShortestPaths(Graph graph, int source) {
+    private static List<ShortestPath> findShortestPaths(Graph graph, int source) {
         var size = graph.getNodes().size() + 1;
         // создаем мини-кучу и проталкиваем исходный узел с расстоянием 0
         var minHeap = new PriorityQueue<CalculatedNode>(Comparator.comparingInt(node -> node.weight));
@@ -129,15 +144,18 @@ class FloydWarshallAlgorithm {
         }
 
         List<Integer> route = new ArrayList<>();
-
+        var result = new ArrayList<ShortestPath>();
         for (int i = 0; i < size; i++) {
             if (i != source && dist.get(i) != Integer.MAX_VALUE) {
                 getRoute(prev, i, route);
                 System.out.printf("Path (%d —> %d): Minimum cost = %d, Route = %s\n",
                         source, i, dist.get(i), route);
+                result.add(new ShortestPath(source, i, dist.get(i), route));
                 route.clear();
             }
         }
+
+        return result;
     }
 
     //TODO refactoring model and algorithm
@@ -154,8 +172,6 @@ class FloydWarshallAlgorithm {
         graph.addEdge(3, 1, -1);
 
         // запускаем алгоритм Дейкстры с каждого узла
-        for (int source = 0; source < n; source++) {
-            findShortestPaths(graph, source);
-        }
+        findShortestPaths(graph);
     }
 }
