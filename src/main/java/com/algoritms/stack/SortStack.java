@@ -11,8 +11,15 @@ public class SortStack {
     private static void sort(Stack<Integer> stack) {
         var sorted = new Stack<Integer>();
 
-        var last = stack.pop();
+        var unsortedItem = stack.pop();
+        while (!stack.isEmpty() && unsortedItem < stack.peek()) {
+            sorted.push(stack.pop());
+        }
 
-        //TODO достаточно этой функции - делай упор на динамическое программирование
+        sorted.push(unsortedItem);
+
+        while (!stack.isEmpty()) {
+            sorted.push(stack.pop());
+        }
     }
 }
