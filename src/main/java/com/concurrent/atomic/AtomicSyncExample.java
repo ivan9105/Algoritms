@@ -1,4 +1,4 @@
-package com.concurrent;
+package com.concurrent.atomic;
 
 import java.util.ArrayList;
 import java.util.List;

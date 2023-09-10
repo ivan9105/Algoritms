@@ -1,17 +1,10 @@
-package com.concurrent;
+package com.concurrent.synchronizers;
 
 import java.util.concurrent.CountDownLatch;
 
 import static java.lang.Thread.sleep;
 
 public class CountDownLatchSample {
-    //TODO здесь остановился
-    //TODO Lock support Park
-    //TOdo time adjuster
-    //Todo treefying дерева разобраться поподробнее
-
-
-    //TODO кольцо кролика на низком уровне
     /*
     создать две точки доступа: WorkExchange и RetryExchange;
 создать очередь WorkQueue с параметрами x-dead-letter-exchange=RetryExchange и связать ее c WorkExchange;

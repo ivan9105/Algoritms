@@ -1,15 +1,16 @@
-package com.concurrent;
+package com.concurrent.pool;
 
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
- * тоже забыл на собесе по факту внутри SynchronousQueue она не блокирует текущий поток
- * автоматически создает и удаляет worker-ы в отличие от fixed thread pool
+ * Похоже на cached thread pool executor
+ * Ток отложенно запускает таску
  */
-public class CachedThreadPoolUsage {
+public class ScheduledThreadPoolUsage {
     public static void main(String[] args) {
-        var threadPool = Executors.newCachedThreadPool();
+        var threadPool = Executors.newScheduledThreadPool(10);
 
         var workers = new ArrayList<Runnable>();
 
@@ -25,9 +26,9 @@ public class CachedThreadPoolUsage {
             });
         }
 
-        workers.forEach(threadPool::execute);
+        workers.forEach(it -> threadPool.schedule(it, 300, TimeUnit.MILLISECONDS));
 
-        //можно не делать текущий поток не блокируется
+        //без этого блокируется текущий поток
         threadPool.shutdown();
 
         System.out.println("Finish process");
