@@ -1,16 +1,16 @@
-package com.concurrent;
+package com.concurrent.pool;
 
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+
+import lombok.SneakyThrows;
 
 /**
- * Похоже на cached thread pool executor
- * Ток отложенно запускает таску
+ * Подзабыл на собесе про LinkedBlockingQueue
  */
-public class ScheduledThreadPoolUsage {
+public class FixedThreadPoolUsage {
     public static void main(String[] args) {
-        var threadPool = Executors.newScheduledThreadPool(10);
+        var threadPool = Executors.newFixedThreadPool(4);
 
         var workers = new ArrayList<Runnable>();
 
@@ -26,7 +26,7 @@ public class ScheduledThreadPoolUsage {
             });
         }
 
-        workers.forEach(it -> threadPool.schedule(it, 300, TimeUnit.MILLISECONDS));
+        workers.forEach(threadPool::execute);
 
         //без этого блокируется текущий поток
         threadPool.shutdown();

@@ -1,16 +1,16 @@
-package com.concurrent;
+package com.concurrent.pool;
 
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 
-import lombok.SneakyThrows;
-
 /**
  * Подзабыл на собесе про LinkedBlockingQueue
+ * блокирует по факту текущий поток исполнения
+ * fixed with pool size 1
  */
-public class FixedThreadPoolUsage {
+public class SingletonThreadPoolUsage {
     public static void main(String[] args) {
-        var threadPool = Executors.newFixedThreadPool(4);
+        var threadPool = Executors.newSingleThreadExecutor();
 
         var workers = new ArrayList<Runnable>();
 
@@ -19,7 +19,7 @@ public class FixedThreadPoolUsage {
             workers.add(() -> {
                 System.out.println("Start runner: " + copyIndex);
                 try {
-                    Thread.sleep(5000L);
+                    Thread.sleep(50L);
                 } catch (InterruptedException ignore) {
                 }
                 System.out.println("Finish runner: " + copyIndex);

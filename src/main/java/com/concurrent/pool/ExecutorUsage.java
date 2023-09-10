@@ -1,4 +1,4 @@
-package com.concurrent;
+package com.concurrent.pool;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
