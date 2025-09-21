@@ -29,7 +29,7 @@ public class DFS {
         graph.addEdge("2", "3");
         graph.addNodes("3", List.of("4", "5"));
 
-        System.out.println("Дано: " + graph.toString());
+        System.out.println("Дано: " + graph);
 
         //non recursive
         var passed = new ArrayList<Node>();

@@ -2,59 +2,53 @@ package com.leetcode;
 
 public class NextPermutationProblem {
     public static void main(String[] args) {
-        //TODO
+        new NextPermutationProblem().nextPermutation(new int[]{1, 2, 3, 5, 4});
     }
 
-    static class Solution {
-        /**
-         * Пример
-         * 0125330
-         * <p>
-         * Шаги:
-         * <p>
-         * 1) Поиск наибольшего неувеличиваюшегося суффикса - 5330
-         * 2) Найдем точку поворота - 2
-         * 3) Найдем наименьший элемент относительно точки возрастания - 3 (позиция - крайняя слева)
-         * 4) Поменяем местами элементы и получим наименьший по возрастанию префикс - 0135320
-         * 5) Отсортируем получившийся суффикс  (5320) - 0130235
-         * 6) Результат
-         */
-        public void nextPermutation(int[] nums) {
-            int length = nums.length;
-            int pivot;
+    public void nextPermutation(int[] nums) {
+        // на вход - {1, 2, 3, 5, 4}
+        int pivot = -1;
+        int swapIndex = -1;
+        // точка поворота - обходим число с конца и ещим место где начальный элемент меньше следующего
+        for (int index = nums.length - 2; index >= 0; index--) {
+            if (nums[index] < nums[index + 1]) {
+                pivot = index;
+                break;
+            }
+        }
+        // переворачиваем число
+        if (pivot == -1) {
+            reverse(nums, 0);
+        } else {
+            // второй индекс - индекс числа, которое больше индекса поворота - pivot = 2
+            for (int index = nums.length - 1; index >= 0; index--) {
+                if (nums[index] > nums[pivot]) {
+                    swapIndex = index;
+                    break;
+                }
+            }
+            // меняем местами - индекс числа больше чем число поворота и число поворота - swapIndex = 4
+            swap(nums, pivot, swapIndex);
+            // {1, 2, 4, 5, 3}
+            // меняем местами все числа начиная с индекса числа поворота + 1 - по факту правой половины
+            reverse(nums, pivot + 1);
+            // {1, 2, 4, 3, 5}
+        }
+    }
 
+    void swap(int[] nums, int firstIndex, int secondIndex) {
+        var temp = nums[firstIndex];
+        nums[firstIndex] = nums[secondIndex];
+        nums[secondIndex] = temp;
+    }
 
-
-
-            //TODO
-//        int i = nums.length - 2;
-//        while (i >= 0 && nums[i + 1] <= nums[i]) {
-//            i--;
-//        }
-//        if (i >= 0) {
-//            int j = nums.length - 1;
-//            while (nums[j] <= nums[i]) {
-//                j--;
-//            }
-//            swap(nums, i, j);
-//        }
-//        reverse(nums, i + 1);
-//    }
-//
-//    private void reverse(int[] nums, int start) {
-//        int i = start, j = nums.length - 1;
-//        while (i < j) {
-//            swap(nums, i, j);
-//            i++;
-//            j--;
-//        }
-//    }
-//
-//    private void swap(int[] nums, int i, int j) {
-//        int temp = nums[i];
-//        nums[i] = nums[j];
-//        nums[j] = temp;
-//    }
+    void reverse(int[] nums, int start) {
+        var startIndex = start;
+        var endIndex = nums.length - 1;
+        while (startIndex < endIndex) {
+            swap(nums, startIndex, endIndex);
+            startIndex++;
+            endIndex--;
         }
     }
 

@@ -21,6 +21,7 @@ CREATE TABLE events (
     category_id INT
 );
 
+-- mysql просто пример with recursive чтобы вспомнить синтаксис
 INSERT INTO events
     WITH RECURSIVE
         generate_data(user_id, search_ts, location_id, category_id) AS
@@ -38,6 +39,15 @@ INSERT INTO events
                         abs(random() % 25) FROM generate_data LIMIT 10000000
             )
     SELECT * FROM generate_data
+
+-- postgres generator
+INSERT INTO events (user_id, search_ts, location_id, category_id) select
+                      t.user_id, t.search_ts, t.location_id, t.category_id from (select generate_series
+     , floor(random() * 100)::int as user_id
+     , now() - (random() * (interval '90 days')) as search_ts
+     , floor(random() * 300)::int as location_id
+     , floor(random() * 25)::int as category_id
+  from generate_series(1, 100000)) as t
 
 --кол-во уникальный пользователей
 

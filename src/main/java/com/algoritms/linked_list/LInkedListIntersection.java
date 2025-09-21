@@ -30,6 +30,7 @@ public class LInkedListIntersection {
         var longerIterator = longer.listIterator(longer.size());
         var shorterIterator = shorter.listIterator(shorter.size());
 
+        //идем по элементам с конца, итераторы инициализируются с помощью индекса, таким образом текущая позиция == концу каждого из списка это ключевой момент идем по previous в обратную сторону
         var longerItem = longerIterator.previous();
         var shortIterm = shorterIterator.previous();
         while (longerItem.equals(shortIterm)) {

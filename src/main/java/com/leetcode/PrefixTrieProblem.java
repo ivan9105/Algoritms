@@ -1,31 +1,21 @@
 package com.leetcode;
 
 /**
- * class Trie {
- * <p>
- * public Trie() {
- * <p>
- * }
- * <p>
- * public void insert(String word) {
- * <p>
- * }
- * <p>
- * public boolean search(String word) {
- * <p>
- * }
- * <p>
- * public boolean startsWith(String prefix) {
- * <p>
- * }
- * }
+ * Input
+ * ["Trie", "insert", "search", "search", "startsWith", "insert", "search"]
+ * [[], ["apple"], ["apple"], ["app"], ["app"], ["app"], ["app"]]
+ * Output
+ * [null, null, true, false, true, null, true]
  */
 public class PrefixTrieProblem {
     public static void main(String[] args) {
+        var trie = new Trie();
+        trie.insert("apple");
+        trie.search("apple"); // true
 
     }
 
-    class Trie {
+    static class Trie {
         private TrieNode root;
 
         public Trie() {
@@ -35,9 +25,9 @@ public class PrefixTrieProblem {
         // проходимся по слову и делаем ветвь в дереве
         public void insert(String word) {
             //инициализируем локальную переменную для прохода по всему слову
-            TrieNode current = root;
-            for (int i = 0; i < word.length(); i++) {
-                char currentChar = word.charAt(i);
+            var current = root;
+            for (var index = 0; index < word.length(); index++) {
+                var currentChar = word.charAt(index);
                 if (!current.containsKey(currentChar)) {
                     current.put(currentChar, new TrieNode());
                 }
@@ -49,7 +39,7 @@ public class PrefixTrieProblem {
         // требуется пройтись по всему дереву начиная с root и найти ветвь с признаком isEnd,
         // тогда мы будем уверены что нашли полностью все слово
         public boolean search(String word) {
-            TrieNode targetNode = searchPrefix(word);
+            var targetNode = searchPrefix(word);
             if (targetNode == null) {
                 return false;
             }
@@ -60,15 +50,15 @@ public class PrefixTrieProblem {
         // требуется пройтись по всему дереву начиная с root и найти ветвь признак isEnd нам не особо важен,
         // тогда мы будем уверены что нашли часть слова
         public boolean startsWith(String prefix) {
-            TrieNode targetNode = searchPrefix(prefix);
+            var targetNode = searchPrefix(prefix);
             return targetNode != null;
         }
 
         private TrieNode searchPrefix(String word) {
             //инициализируем локальную переменную для прохода по всему слову
-            TrieNode current = root;
-            for (int i = 0; i < word.length(); i++) {
-                char currentChar = word.charAt(i);
+            var current = root;
+            for (var index = 0; index < word.length(); index++) {
+                var currentChar = word.charAt(index);
                 if (!current.containsKey(currentChar)) {
                     return null;
                 }
@@ -81,11 +71,11 @@ public class PrefixTrieProblem {
     }
 
     /**
-     * Слово будет храниться в виде дерева
+     * Слово будет храниться в виде дерева посимвольно, каждая node это список до 26 элепементов, инициализируется node по порядковому значению символа $CHAR - 'a'
      * при вставке одна node хранит одну букву дальше двигаясь в цикле по слову мы формируем связанный список
      * максимальная длина уровня соотвественно 26 символов, кол-во букв в английском алфавите
      */
-    private class TrieNode {
+    private static class TrieNode {
         private TrieNode[] links;
         private boolean isEnd;
 

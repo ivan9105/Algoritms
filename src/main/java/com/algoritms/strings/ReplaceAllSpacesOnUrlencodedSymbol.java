@@ -12,39 +12,30 @@ public class ReplaceAllSpacesOnUrlencodedSymbol {
         System.out.println("Convert input " + input + " to: " + convert(input));
     }
 
+    //посчитать количество пробелов, посчитать новую длину массива и заполнить, заполнение идет с конца массва
     private static String convert(String input) {
-        if (input == null || input.length() == 0) {
+        input = input.trim();
+        if (input == null || input.isEmpty()) {
             return input;
         }
 
-        input = "Mr John Smith  ".trim();
-        var arr = input.toCharArray();
-
-        int spaceCount = 0;
-        for (char ch : arr) {
+        var spaceCount = 0;
+        var oldArr = input.toCharArray();
+        for (var ch : oldArr) {
             if (ch == ' ') {
                 spaceCount++;
             }
         }
-
-        if (spaceCount == 0) {
-            return input;
-        }
-
-        var length = input.length();
-        var newLength = length + 2 * spaceCount;
-
+        var newLength = input.length() + spaceCount * 2;
         var newArr = new char[newLength];
-
-        for (int index = length - 1; index >= 0; index--) {
-            if (arr[index] == ' ') {
-                newArr[newLength - 1] = '0';
-                newArr[newLength - 2] = '2';
-                newArr[newLength - 3] = '%';
-                newLength = newLength - 3;
+        for (var index = input.length() - 1; index >= 0; index--) {
+            var ch = oldArr[index];
+            if (ch == ' ') {
+                newArr[--newLength] = '0';
+                newArr[--newLength] = '2';
+                newArr[--newLength] = '%';
             } else {
-                newArr[newLength - 1] = arr[index];
-                newLength--;
+                newArr[--newLength] = ch;
             }
         }
 

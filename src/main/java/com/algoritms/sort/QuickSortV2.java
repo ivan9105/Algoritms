@@ -21,41 +21,34 @@ public class QuickSortV2 {
             return;
         }
 
-        var median = from + (to - from) / 2;
-        var middleValue = arr[median];
+        var pivot = from + (to - from) / 2;
+        var middleValue = arr[pivot];
+        var leftIndex = from;
+        var rightIndex = to;
 
-        int leftIndex = from, rightIndex = to;
         while (leftIndex <= rightIndex) {
             while (arr[leftIndex] < middleValue) {
-                leftIndex++;
+                leftIndex++; // означает что значение в правильном подмассиве
             }
 
             while (arr[rightIndex] > middleValue) {
-                rightIndex--;
+                rightIndex--; // означает что значение в правильном подмассиве
             }
 
-            if (leftIndex <= rightIndex) {
-                System.out.printf("Swap left index: %s, right index: %s, median: %s, middle value: %s arr: %s%n",
-                        leftIndex, rightIndex, median, middleValue, prettyArr(arr));
-
+            if (leftIndex <= rightIndex) { // тут мы дошли до элементов которые находяться не в своих половинах
                 swap(arr, leftIndex, rightIndex);
-
-                System.out.printf("RESULT Swap left index: %s, right index: %s, median: %s, middle value: %s arr: %s%n",
-                        leftIndex, rightIndex, median, middleValue, prettyArr(arr));
-
                 leftIndex++;
                 rightIndex--;
             }
         }
 
         if (from < rightIndex) {
-            quickSort(arr, from, rightIndex);
+            quickSort(arr, from, rightIndex); // делаем тоже самое для неосортированных элементов подмассива
         }
 
         if (to > leftIndex) {
             quickSort(arr, leftIndex, to);
         }
-
     }
 
     private static String prettyArr(int[] arr) {

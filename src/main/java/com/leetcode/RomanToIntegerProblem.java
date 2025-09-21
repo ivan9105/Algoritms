@@ -5,10 +5,25 @@ import java.util.Map;
 
 public class RomanToIntegerProblem {
     public static void main(String[] args) {
-        System.out.println(new SimpleSolution().romanToInt("LVIII"));
+        System.out.println(new SimpleSolution().romanToInt("MCMXCIV"));
     }
 
     /**
+     *Example 1:
+     *
+     * Input: s = "III"
+     * Output: 3
+     * Explanation: III = 3.
+     * Example 2:
+     *
+     * Input: s = "LVIII"
+     * Output: 58
+     * Explanation: L = 50, V= 5, III = 3.
+     * Example 3:
+     *
+     * Input: s = "MCMXCIV"
+     * Output: 1994
+     * Explanation: M = 1000, CM = 900, XC = 90 and IV = 4.
      *
      */
     static class SimpleSolution {
@@ -23,11 +38,6 @@ public class RomanToIntegerProblem {
             put('M', 1000);
         }};
 
-        /**
-         * I can be placed before V (5) and X (10) to make 4 and 9.
-         * X can be placed before L (50) and C (100) to make 40 and 90.
-         * C can be placed before D (500) and M (1000) to make 400 and 900.
-         */
         private static final Map<String, Integer> RULES_VALUES_MAP = new HashMap<>() {{
             put("IV", 4);
             put("IX", 9);
@@ -39,28 +49,29 @@ public class RomanToIntegerProblem {
 
 
         public int romanToInt(String str) {
-            int sum = 0;
-            String reversedStr = new StringBuilder(str).reverse().toString();
-            char lastChar = '-';
+            var sum = 0;
+            var reversedStr = new StringBuilder(str).reverse().toString();
+            var prevChar = '-';
 
-            for (int i = 0; i < reversedStr.length(); i++) {
-                char currentChar = reversedStr.charAt(i);
-                Integer ruleValue = getRuleValue(currentChar, lastChar);
+            for (var index = 0; index < reversedStr.length(); index++) {
+                var currentChar = reversedStr.charAt(index);
+                var ruleValue = getRuleValue(currentChar, prevChar);
 
                 if (ruleValue != null) {
-                    sum = sum + (ruleValue - ROMAN_NUMBERS_WEIGHT_MAP.get(lastChar));
+                    //ruleValue - ROMAN_NUMBERS_WEIGHT_MAP.get(prevChar) - предыдущее значение не правильно посчитано, требуется обработать предыдущее суммирование
+                    sum = sum + (ruleValue - ROMAN_NUMBERS_WEIGHT_MAP.get(prevChar));
                 } else {
                     sum += ROMAN_NUMBERS_WEIGHT_MAP.get(currentChar);
                 }
 
-                lastChar = currentChar;
+                prevChar = currentChar;
             }
 
             return sum;
         }
 
         private Integer getRuleValue(char currentChar, char lastChar) {
-            char[] rule = new char[2];
+            var rule = new char[2];
             rule[0] = currentChar;
             rule[1] = lastChar;
             return RULES_VALUES_MAP.get(new String(rule));

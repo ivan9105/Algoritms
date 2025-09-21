@@ -45,17 +45,15 @@ public class CombinationSum {
             return;
         }
 
-        //выходное условие
         if (input.length == index) {
             return;
         }
 
         var diff = target - input[index];
-        if (diff >= 0) {
-            //учитываем дубль
+        if (diff >= 0) { //учитываем дубли и наличие отрицательных элементов при расчете target ниже
             output.add(input[index]);
-            calculate(result, diff, input, output, index);
-            output.remove(output.size() - 1);
+            calculate(result, diff, input, output, index); // расчет делаем для diff а не target, пропускаем
+            output.remove(output.size() - 1); // прошлись по всем возможным вариантам с задублированным output и следующими значениями и выход
         }
         calculate(result, target, input, output, index + 1);
     }

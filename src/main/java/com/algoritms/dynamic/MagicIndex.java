@@ -7,7 +7,7 @@ import java.util.Arrays;
  * выполняется условие A[i]=i. Для заданного отсортированного массива,
  * не содержащего одинаковых значений, напишите метод поиска «волшебного»
  * индекса в массиве А (если он существует).
- * Д ополиительио
+ * Дополнительно:
  * Что произойдет, если массив может содержать одинаковые значения?
  */
 public class MagicIndex {
@@ -35,7 +35,6 @@ public class MagicIndex {
         if (leftIndex > 0) {
             return leftIndex;
         }
-
         return calc(arr, Math.max(middleIndex + 1, middleValue), end);
     }
 }

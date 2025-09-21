@@ -37,9 +37,10 @@ public class JumpGameOneProblem {
             int maxDistance = 0;
             for (int currentIndex = 0; currentIndex < nums.length; currentIndex++) {
                 if (currentIndex > maxDistance) {
+                    // если дошли до элемента и максимальное значение дистанции меньше, значит нет возможности допрыгнуть до этой позиции
                     return false;
                 }
-
+                // текущая позиция + вес
                 maxDistance = Math.max(maxDistance, currentIndex + nums[currentIndex]);
             }
 

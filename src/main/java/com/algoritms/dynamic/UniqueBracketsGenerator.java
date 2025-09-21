@@ -14,6 +14,7 @@ import java.util.Set;
  */
 public class UniqueBracketsGenerator {
     public static void main(String[] args) {
+        //TODO подробный разбор
         int count = 3;
 
         System.out.println("Generate result with count: " + count + ": " + calc(count));
@@ -35,8 +36,7 @@ public class UniqueBracketsGenerator {
         }
 
         if (leftCount == 0 && rightCount == 0) {
-            var newStr = String.copyValueOf(buffer);
-            result.add(newStr);
+            result.add(String.copyValueOf(buffer));
             return;
         }
 

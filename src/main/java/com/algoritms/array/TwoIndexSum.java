@@ -19,13 +19,14 @@ public class TwoIndexSum {
     }
 
     private static Pair<Integer, Integer> calculate(int[] arr, int target) {
-        var invertArrayMap = new HashMap<Integer, Integer>();
-        for (int index = 0; index < arr.length; index++) {
-            var secondValue = target - arr[index];
-            if (invertArrayMap.containsKey(secondValue)) {
-                return new Pair<>(index, invertArrayMap.get(secondValue));
+        var indexCache = new HashMap<Integer, Integer>();
+
+        for (var index = 0; index < arr.length; index++) {
+            var invertedValue = target - arr[index];
+            if (indexCache.containsKey(invertedValue)) {
+                return new Pair<>(indexCache.get(invertedValue), index);
             } else {
-                invertArrayMap.put(secondValue, index);
+                indexCache.put(arr[index], index);
             }
         }
         return new Pair<>(-1, -1);

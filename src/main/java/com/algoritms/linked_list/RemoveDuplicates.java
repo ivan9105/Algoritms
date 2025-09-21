@@ -1,23 +1,49 @@
 package com.algoritms.linked_list;
 
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.HashSet;
 
 public class RemoveDuplicates {
     public static void main(String[] args) {
-        var list = new LinkedList<Integer>();
-        list.add(4);
-        list.add(5);
-        list.add(5);
-        list.add(4);
+        var head = new ListNode(4);
+        head.next = new ListNode(5);
+        head.next.next = new ListNode(5);
+        head.next.next.next = new ListNode(4);
 
-        removeDuplicates(list.iterator());
-
-        //TODO нужен custom linked list
-        //TODO два решение кеш через set либо в цикле получаем элемент и во внутреннем цикле удаляем все дубли
+        removeDuplicates(head);
+        printList(head);
     }
 
-    private static void removeDuplicates(Iterator<Integer> iterator) {
-        //TODO
+    private static void removeDuplicates(ListNode head) {
+        var cache = new HashSet<Integer>();
+
+        ListNode prev = null;
+        while (head != null) {
+            if (cache.contains(head.val)) {
+                prev.next = head.next;
+            } else {
+                cache.add(head.val);
+                prev = head;
+            }
+            head = head.next;
+        }
+    }
+
+    private static void printList(ListNode head) {
+        while (head != null) {
+            System.out.print(head.val + " ");
+            if (head.next != null) {
+                System.out.print("-> ");
+            }
+            head = head.next;
+        }
+    }
+
+    private static class ListNode {
+        private int val;
+        private ListNode next;
+        public ListNode(int x) {
+            val = x;
+            next = null;
+        }
     }
 }

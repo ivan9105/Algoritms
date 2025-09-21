@@ -6,7 +6,7 @@ import java.util.List;
 
 public class GenerateParenthesesProblem {
     public static void main(String[] args) {
-        System.out.println(new ClosureNumberSolution().generateParenthesis(2));
+        System.out.println(new ClosureNumberSolution().generateParenthesis(3));
     }
 
 

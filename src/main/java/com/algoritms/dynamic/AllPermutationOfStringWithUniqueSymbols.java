@@ -21,19 +21,28 @@ public class AllPermutationOfStringWithUniqueSymbols {
         return result;
     }
 
+    /**
+     * Динамический подход:
+     * адский немного алгоритм, разделяем на подзадачи запоминаем prefix, который используется как решение предыдушей задачи,
+     * таким образом, проходимся по всем элементам, и учитываем все сочетания, при этом задача вначале выполняется для подстроки в 3 символа, потом в 2, потом в 1
+     * запоминаем мы эти части на уровне стека
+     * before + after разделение строки на 2 части без учета текущего символа
+     * выходное условие prefix 2 символа, подстрока 1 и index = 0
+     */
     private static void calcSecond(String prefix, String subStr, List<String> result) {
         if (subStr.length() == 0) {
             result.add(prefix);
         }
 
-        int length = subStr.length();
+        var length = subStr.length();
         for (int index = 0; index < length; index++) {
             var before = subStr.substring(0, index);
             var after = subStr.substring(index + 1, length);
-            char ch = subStr.charAt(index);
-            calcSecond(prefix + ch, before + after, result);
+            var ch = subStr.charAt(index);
+            calcSecond(ch + prefix, before + after, result);
         }
     }
+
 
     // O(n!)
     private static List<String> calcFirst(String str) {

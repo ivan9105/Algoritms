@@ -14,10 +14,10 @@ insert into table1 (id1, id2) values (NULL, 'f');
 
 select
   count(*),     -- 7
-  count(1),     -- 5
+  count(1),     -- 7
   count(case when id1 = 1 then '1' else '' end),
-  count(10),    -- error
+  count(10),    -- 7
   count(id1),    -- 5
   count('abc'), -- 7
-  count(NULL)   -- 2
+  count(NULL)   -- 0
 from table1;

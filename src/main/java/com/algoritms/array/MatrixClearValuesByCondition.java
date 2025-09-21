@@ -35,40 +35,32 @@ public class MatrixClearValuesByCondition {
     }
 
     private static void setZeros(int[][] matrix) {
-        var rows_bool_table = new boolean[matrix.length];
-        var cols_bool_table = new boolean[matrix[0].length];
+        var zeroRows = new boolean[matrix.length];
+        var zeroCols = new boolean[matrix[0].length];
 
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLS; j++) {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
                 if (matrix[i][j] == 0) {
-                    rows_bool_table[i] = true;
-                    cols_bool_table[j] = true;
+                    zeroRows[i] = true;
+                    zeroCols[j] = true;
                 }
             }
         }
 
-        for (int index = 0; index < rows_bool_table.length; index++) {
-            if (rows_bool_table[index]) {
-                nullifyRow(matrix, index);
+        for (int index = 0; index < zeroRows.length; index++) {
+            if (zeroCols[index]) {
+                for (int i = 0; i < matrix.length; i++) {
+                    matrix[index][i] = 0;
+                }
             }
         }
 
-        for (int index = 0; index < cols_bool_table.length; index++) {
-            if (cols_bool_table[index]) {
-                nullifyColumn(matrix, index);
+        for (int index = 0; index < zeroCols.length; index++) {
+            if (zeroRows[index]) {
+                for (int j = 0; j < matrix.length; j++) {
+                    matrix[j][index] = 0;
+                }
             }
-        }
-    }
-
-    private static void nullifyRow(int[][] matrix, int row) {
-        for (int index = 0; index < matrix.length; index++) {
-            matrix[row][index] = 0;
-        }
-    }
-
-    private static void nullifyColumn(int[][] matrix, int column) {
-        for (int index = 0; index < matrix[0].length; index++) {
-            matrix[index][column] = 0;
         }
     }
 }

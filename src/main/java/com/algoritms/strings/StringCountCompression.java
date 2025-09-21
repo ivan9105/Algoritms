@@ -7,8 +7,12 @@ public class StringCountCompression {
     }
 
     private static String compress(String value) {
+        if (value == null) {
+            return value;
+        }
+
         int length = value.length();
-        if (value == null || length == 0) {
+        if (length == 0) {
             return value;
         }
 
@@ -18,13 +22,13 @@ public class StringCountCompression {
         var count = 0;
         for (int index = 0; index < length; index++) {
             var ch = value.charAt(index);
-            if (index < length - 1 && ch != value.charAt(index + 1)) {
+            if (index < length - 1 && ch != value.charAt(index + 1)) { // след. символ != предыдущему символу
                 sb.append(ch).append(count + 1);
                 count = 0;
-            } else if (index == length - 1) {
+            } else if (index == length - 1) { // след. символа нет
                 sb.append(ch).append(count + 1);
                 count = 0;
-            } else {
+            } else { //след. символ такой же как и пред.
                 count++;
             }
         }

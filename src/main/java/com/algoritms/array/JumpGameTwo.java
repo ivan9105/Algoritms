@@ -18,20 +18,21 @@ public class JumpGameTwo {
     public static void main(String[] args) {
         // Greedy algorithm version
         //минимальное кол-во шагов чтобы добраться до n-1
-
         var input = new int[]{2, 3, 1, 1, 4};
-        jump(input);
+        System.out.println(jump(input));
     }
 
     private static int jump(int[] input) {
-        int jumps = 0, currEnd = 0, currFarthest = 0;
-        for (int index = 0; index < input.length - 1; index++) {
-            currFarthest = Math.max(currFarthest, index + input[index]);
-            if (index == currEnd) {
-                currEnd = currFarthest;
-                jumps++;
+        var result = 0;
+        var currentState = 0;
+        var longestJump = 0;
+        for (int currentStep = 0; currentStep < input.length - 1; currentStep++) {
+            longestJump = Math.max(longestJump, currentStep + input[currentStep]);
+            if (currentStep == currentState) { // делаем прыжок и записываем текущее состояние, доходим до индекса где мы сейчас находимся
+                currentState = longestJump; // дописываем максимальное дальнее растояние до которого удалось добраться, текущее или предыдущее
+                result++;
             }
         }
-        return jumps;
+        return result;
     }
 }

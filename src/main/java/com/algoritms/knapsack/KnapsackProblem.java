@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 
 public class KnapsackProblem {
 
-    private static final ThingsAggregation EMTPY_AGGR = new ThingsAggregation(emptyList(), 0);
+    private static final ThingsResult EMPTY = new ThingsResult(emptyList(), 0);
 
     public static void main(String[] args) {
         var capacity = 4;
@@ -21,58 +21,60 @@ public class KnapsackProblem {
                 new Thing(3, "Подвеска", 2000)
         };
 
-        var table = new ThingsAggregation[things.length][capacity];
+        var table = new ThingsResult[things.length][capacity];
 
         //вещи
-        for (int i = 0; i < things.length; i++) {
+        for (int thingIndex = 0; thingIndex < things.length; thingIndex++) {
             //веса
-            for (int j = 1; j <= capacity; j++) {
-                var thing = things[i];
+            for (int weight = 1; weight <= capacity; weight++) {
+                var thing = things[thingIndex];
 
-                System.out.printf("Select thing: %s, compare with weight: %s%n", thing, j);
+                System.out.printf("Заполняем таблицу, вещь: %s[%d], вес: %s%n", thing.name, thingIndex, weight);
 
-                // (j - 1) - индекс по весам
-                if (j >= thing.weight) {
+                // (weight - 1) - индекс по весам
+                if (weight >= thing.weight) {
                     // предыдущий макс
-                    var prevMax = i == 0 ? 0 : table[i - 1][j - 1].sum;
+                    var prevMaxPrice = thingIndex == 0 ? 0 : table[thingIndex - 1][weight - 1].sum;
                     // стоимость текущей вещи + стоимость max оставшегося места
 
-                    var currentPrice = 0;
-                    var prevMaxThingForExtraWeight = i == 0 ? EMTPY_AGGR : table[i - 1][j - thing.weight];
-                    if (i == 0) {
-                        currentPrice = thing.price;
+                    var price = 0;
+                    var prevMaxThingForExtraWeight = thingIndex == 0 ? EMPTY : table[thingIndex - 1][weight - thing.weight];
+                    if (thingIndex == 0) {
+                        price = thing.price;
                     } else {
                         int extraCapacityThingWeight = prevMaxThingForExtraWeight.getWeight();
                         // если хватит места
-                        if (j - thing.weight >= extraCapacityThingWeight) {
-                            currentPrice = thing.price + prevMaxThingForExtraWeight.sum;
+                        if (weight - thing.weight >= extraCapacityThingWeight) {
+                            price = thing.price + prevMaxThingForExtraWeight.sum;
                         }
                     }
 
 
-                    if (prevMax > currentPrice) {
-                        table[i][j - 1] = table[i - 1][j - 1];
+                    if (prevMaxPrice > price) {
+                        table[thingIndex][weight - 1] = table[thingIndex - 1][weight - 1];
                     } else {
-                        table[i][j - 1] = i == 0 ? new ThingsAggregation(List.of(thing), thing.price) : merge(thing, prevMaxThingForExtraWeight);
+                        table[thingIndex][weight - 1] = thingIndex == 0
+                                ? new ThingsResult(List.of(thing), thing.price)
+                                : mergeResult(thing, prevMaxThingForExtraWeight);
 
                     }
                 } else {
                     // если вес меньше чем вес вещи то берем либо 0 стоимость (для первого ряда) либо предудущий максимум элементов
-                    table[i][j - 1] = i == 0 ? EMTPY_AGGR : table[i - 1][j - 1];
+                    table[thingIndex][weight - 1] = thingIndex == 0 ? EMPTY : table[thingIndex - 1][weight - 1];
                 }
             }
         }
 
         var result = table[things.length - 1][capacity - 1];
 
-        System.out.println("Result: " + result);
+        System.out.println("Результат: " + result);
     }
 
-    private static ThingsAggregation merge(Thing newThing, ThingsAggregation aggr) {
-        var things = new ArrayList<>(aggr.getThings());
-        things.add(newThing);
+    private static ThingsResult mergeResult(Thing thing, ThingsResult prevResult) {
+        var things = new ArrayList<>(prevResult.getThings());
+        things.add(thing);
 
-        return new ThingsAggregation(things, aggr.sum + newThing.price);
+        return new ThingsResult(things, prevResult.sum + thing.price);
     }
 
     @Data
@@ -85,7 +87,7 @@ public class KnapsackProblem {
 
     @Data
     @RequiredArgsConstructor
-    private static class ThingsAggregation {
+    private static class ThingsResult {
         private final List<Thing> things;
         private final int sum;
 

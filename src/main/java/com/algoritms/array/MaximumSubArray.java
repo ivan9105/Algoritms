@@ -24,21 +24,21 @@ public class MaximumSubArray {
     }
 
     private static int calculate(int[] arr) {
-        var maxSum = Integer.MIN_VALUE;
-        var currentSum = 0;
+        var max = Integer.MIN_VALUE;
+        var current = 0;
 
-        for (int value : arr) {
-            currentSum += value;
+        for (int i = 0; i < arr.length; i++) {
+            current += arr[i];
 
-            if (currentSum > maxSum) {
-                maxSum = currentSum;
+            if (max < current) {
+                max = current;
             }
 
-            if (currentSum < 0) {
-                currentSum = 0;
+            if (current < 0) {
+                current = 0;
             }
         }
 
-        return maxSum;
+        return max;
     }
 }

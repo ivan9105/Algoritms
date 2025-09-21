@@ -10,7 +10,6 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 
 import lombok.Builder;
@@ -29,30 +28,26 @@ public class BFS {
         graph.addNodes("2", List.of("1", "4", "0"));
         graph.addNodes("3", List.of("1", "4"));
         graph.addNodes("4", List.of("2", "3"));
-
-        System.out.println("Дано: " + graph.toString());
+        System.out.println("Дано: " + graph);
 
         //non recursive
         var passed = new ArrayList<Node>();
-        Queue<Node> queue = new LinkedList<>();
-
+        var queue = new LinkedList<Node>();
         queue.offer(graph.getRoot());
-
         while (!queue.isEmpty()) {
             var current = queue.poll();
 
             if (!passed.contains(current)) {
-                System.out.println("Пройдена node: " + current);
+                System.out.printf("Обработана node: %s%n", current);
                 passed.add(current);
             }
 
-            for (Node adjacent : current.getAdjacent()) {
+            for (var adjacent : current.getAdjacent()) {
                 if (!passed.contains(adjacent)) {
                     queue.offer(adjacent);
                 }
             }
         }
-
     }
 
     @Data
@@ -61,14 +56,10 @@ public class BFS {
         private final Map<String, Node> nodes = new HashMap<>();
         private Node root = null;
 
-        public void addEdge(String target, String adjacent) {
-            addNodes(target, List.of(adjacent));
-        }
-
         public void addNodes(String target, List<String> adjacent) {
             var targetNode = findOrCreateNode(target);
 
-            if (adjacent != null && adjacent.size() > 0) {
+            if (adjacent != null && !adjacent.isEmpty()) {
                 adjacent.forEach(it -> targetNode.getAdjacent().add(findOrCreateNode(it)));
             }
         }

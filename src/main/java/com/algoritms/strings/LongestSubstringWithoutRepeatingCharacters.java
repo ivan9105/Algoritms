@@ -1,5 +1,7 @@
 package com.algoritminput.strings;
 
+import static java.lang.Math.max;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,21 +28,21 @@ public class LongestSubstringWithoutRepeatingCharacters {
      * Если не уникален удаляем первый элемент в set так (двигаем подстроку)
      */
     private static int calculate(String input) {
-        int length = input.length();
-        int maxLength = 0;
-        Set<Character> charSet = new HashSet<>();
-        int left = 0;
+        var inputArr = input.toCharArray();
+        var left = 0;
+        var maxLength = 0;
+        var cache = new HashSet<Character>();
 
-        for (int right = 0; right < length; right++) {
-            if (!charSet.contains(input.charAt(right))) {
-                charSet.add(input.charAt(right));
-                maxLength = Math.max(maxLength, right - left + 1);
+        for (var right = 0; right < inputArr.length; right++) {
+            if (!cache.contains(inputArr[right])) {
+                cache.add(inputArr[right]);
+                maxLength = max(maxLength, right - left + 1);
             } else {
-                while (charSet.contains(input.charAt(right))) {
-                    charSet.remove(input.charAt(left));
+                while (cache.contains(inputArr[right])) {
+                    cache.remove(input.charAt(left));
                     left++;
                 }
-                charSet.add(input.charAt(right));
+                cache.add(input.charAt(right));
             }
         }
 

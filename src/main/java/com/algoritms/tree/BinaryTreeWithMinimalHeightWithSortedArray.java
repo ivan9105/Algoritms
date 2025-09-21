@@ -89,9 +89,8 @@ public class BinaryTreeWithMinimalHeightWithSortedArray {
             return null;
         }
 
-        int middle = (end + start) / 2;
-        TreeNode node = new TreeNode(arr[middle]);
-
+        var middle = (end + start) / 2;
+        var node = new TreeNode(middle);
         if (tree.getRoot() == null) {
             tree.setRoot(node);
         }
@@ -110,7 +109,7 @@ public class BinaryTreeWithMinimalHeightWithSortedArray {
         private TreeNode root;
 
         public void print() {
-            System.out.println(toString());
+            System.out.println(this);
         }
 
         @Override
@@ -119,11 +118,11 @@ public class BinaryTreeWithMinimalHeightWithSortedArray {
                 return "";
             }
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.append(root.getValue());
 
-            String pointerRight = "└──";
-            String pointerLeft = (root.getRight() != null) ? "├──" : "└──";
+            var pointerRight = "└──";
+            var pointerLeft = (root.getRight() != null) ? "├──" : "└──";
 
             traverseNodes(sb, "", pointerLeft, root.getLeft(), root.getRight() != null);
             traverseNodes(sb, "", pointerRight, root.getRight(), false);

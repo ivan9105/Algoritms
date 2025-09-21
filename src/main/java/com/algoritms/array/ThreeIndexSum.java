@@ -28,26 +28,23 @@ public class ThreeIndexSum {
 
         var result = new HashSet<List<Integer>>();
 
-        sort(arr);
+        sort(arr); // важно чтобы массив был отсортирован
 
         var length = arr.length;
+        for (int current = 0; current < length - 2; current++) { // length - 2 последних элемента мы учтем во внутреннем цикле
+            var left = current + 1; // две tmp переменные для расчета справа и слева
+            var right = length - 1;
 
-        for (int i = 0; i < length - 2; i++) {
-            var j = i + 1;
-            var k = length - 1;
-
-            while (j < k) {
-                var sum = arr[j] + arr[k];
-                //если сумма меньше отрицательного элемента по индексу i - значит нужно подвинуть элемент слева j
-                if (sum < -arr[i]) {
-                    j++;
-                    //если сумма больше отрицательного элемента по индексу i - значит нужно подвинуть элемент справа k
-                } else if (sum > -arr[i]) {
-                    k--;
+            while (left < right) {
+                var sum = arr[left] + arr[right]; // сумма двух крайних элементов
+                if (sum < -arr[current]) { // двигаем вправо
+                    left++;
+                } else if (sum > -arr[current]) { //двигаем влево
+                    right--;
                 } else {
-                    result.add(List.of(arr[i], arr[j], arr[k]));
-                    j++;
-                    k--;
+                    result.add(List.of(arr[left], arr[current], arr[right]));
+                    left++;
+                    right--;
                 }
             }
         }

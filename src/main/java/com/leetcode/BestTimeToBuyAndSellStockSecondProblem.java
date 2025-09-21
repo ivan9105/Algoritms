@@ -16,7 +16,7 @@ public class BestTimeToBuyAndSellStockSecondProblem {
      * Нужно посчитать максимальный profit при условии что ты должен купить и продать сразу на след день
      * Алгоритм по шагам:
      * <p>
-     * TODO
+     * 1) Если предыдущая цена меньше текущей, можем посчитать профит, считаем и суммируем общий профит после прохода
      */
     static class SimpleSolution {
         private static final int NON_VALUE = -1;
