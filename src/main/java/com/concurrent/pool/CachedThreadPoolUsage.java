@@ -1,16 +1,15 @@
-package com.concurrent;
+package com.concurrent.pool;
 
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 
 /**
- * Подзабыл на собесе про LinkedBlockingQueue
- * блокирует по факту текущий поток исполнения
- * fixed with pool size 1
+ * тоже забыл на собесе по факту внутри SynchronousQueue она не блокирует текущий поток
+ * автоматически создает и удаляет worker-ы в отличие от fixed thread pool
  */
-public class SingletonThreadPoolUsage {
+public class CachedThreadPoolUsage {
     public static void main(String[] args) {
-        var threadPool = Executors.newSingleThreadExecutor();
+        var threadPool = Executors.newCachedThreadPool();
 
         var workers = new ArrayList<Runnable>();
 
@@ -19,7 +18,7 @@ public class SingletonThreadPoolUsage {
             workers.add(() -> {
                 System.out.println("Start runner: " + copyIndex);
                 try {
-                    Thread.sleep(50L);
+                    Thread.sleep(5000L);
                 } catch (InterruptedException ignore) {
                 }
                 System.out.println("Finish runner: " + copyIndex);
@@ -28,7 +27,7 @@ public class SingletonThreadPoolUsage {
 
         workers.forEach(threadPool::execute);
 
-        //без этого блокируется текущий поток
+        //можно не делать текущий поток не блокируется
         threadPool.shutdown();
 
         System.out.println("Finish process");
