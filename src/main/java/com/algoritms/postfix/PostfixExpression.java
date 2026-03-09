@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 public class PostfixExpression {
+
     public static void main(String[] args) {
         var expression = "3 + 4 * 2 / (1 - 5) ^ 2".replaceAll(" ", "");
         System.out.println("Infix: " + expression + ", postfix: " + infixToPostfix(expression));

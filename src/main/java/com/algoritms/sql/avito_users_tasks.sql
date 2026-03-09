@@ -17,6 +17,7 @@ INSERT INTO users (id, name, actual_date) VALUES (1, 'Глеб', '2022-01-01');
 INSERT INTO users (id, name, actual_date) VALUES (1, 'Ваня', '2023-01-01');
 
 --rows between unbounded preceding and unbounded following - ИЗБАВЛЯЕТ ОТ ДУБЛЕЙ
+-- last_value последнее значение в окне
 
 --Все, что до текущей строки/диапазона и само значение текущей строки
 --BETWEEN UNBOUNDED PRECEDING
@@ -44,7 +45,7 @@ from users
 
 -- Производильность?
 -- Например нет смысл указывать unbounded preceding за счет order by DESC - мы итак выбираем верхнюю позицию
---rows between unbounded preceding and unbounded following
+--rows between unbounded preceding and unbounded following, можно указать rows between current row and unbounded following
 
 --2)
 
@@ -86,5 +87,3 @@ from users
 
 ---Нужно собрать количество событий в день. Тестовых пользователей
 -- исключить
-
---TODO можно выполнить это с помощью оконной функции с сортировки и учетом rows unbounded preceding / following

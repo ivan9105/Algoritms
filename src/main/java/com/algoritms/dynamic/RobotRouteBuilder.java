@@ -18,6 +18,9 @@ import lombok.RequiredArgsConstructor;
  * 357
  */
 public class RobotRouteBuilder {
+
+    private static final Point ORIGIN = new Point(0, 0);
+
     public static void main(String[] args) {
         // given
         int x = 15;
@@ -49,16 +52,15 @@ public class RobotRouteBuilder {
             return cache.get(point);
         }
 
-        boolean isOrigin = (x == 0) && (y == 0);
-        boolean success = false;
+        var isOrigin = ORIGIN.equals(point);
+        var result = false;
 
         if (isOrigin || getRoute(path, x, y - 1, maze, cache) || getRoute(path, x - 1, y, maze, cache)) {
             path.add(point);
-            success = true;
+            result = true;
         }
-
-        cache.put(point, success);
-        return success;
+        cache.put(point, result);
+        return result;
     }
 
     @Data

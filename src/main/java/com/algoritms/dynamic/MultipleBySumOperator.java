@@ -11,7 +11,7 @@ public class MultipleBySumOperator {
         var x = 9;
         var y = 8;
 
-        var smaller = x > y ? y : x;
+        var smaller = Math.min(x, y);
         var bigger = y == smaller ? x : y;
         System.out.println("The multiple of x: " + x + ", y: " + y + " is equals: " + calc(smaller, bigger));
     }
@@ -23,13 +23,13 @@ public class MultipleBySumOperator {
             return bigger;
         }
 
-        int temp = smaller >> 1; // divide into 2
-        int halfProd = calc(temp, bigger);
+        int half = smaller >> 1; // divide into 2
+        int multipleHalf = calc(half, bigger); // разделить на 2 и посчитать сумму для половины, получается стек вызовов 9 + 9, 18 + 18 и так далее, т.е. уменьшение кол-ва операций
 
         if (smaller % 2 == 0) {
-            return halfProd + halfProd;
+            return multipleHalf + multipleHalf;
         } else {
-            return halfProd + halfProd + bigger;
+            return multipleHalf + multipleHalf + bigger;
         }
     }
 }

@@ -3,6 +3,7 @@ package com.algoritms.sort;
 import java.util.Arrays;
 
 public class SelectSort {
+
     public static void main(String[] args) {
         int[] arr = {4, 9, 7, 6, 2, 3};
         sort(arr);
@@ -14,7 +15,7 @@ public class SelectSort {
         System.out.println("Дано: " + prettyArr(arr));
 
         // кол - во элементов
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) { // идем по каждому элементу ищем минимальный
             int min = arr[i];
             int minIndex = i;
             // внутренний проход - отсортированные элементы скапливаются в самом начале
@@ -27,7 +28,7 @@ public class SelectSort {
                 }
             }
 
-            swap(arr, minIndex, i);
+            swap(arr, minIndex, i); // нашли более минималный меняем местами с текущим минимальным
             System.out.println("После " + i + " итерации: " + prettyArr(arr));
 
         }

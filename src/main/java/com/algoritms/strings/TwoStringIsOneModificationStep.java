@@ -33,21 +33,21 @@ public class TwoStringIsOneModificationStep {
         var longestPointer = 0;
         var shortestPointer = 0;
         var hasModification = false;
-        var differentLength = longest.length() != shortest.length();
+        var hasDifferentLength = longest.length() != shortest.length();
 
         while (longestPointer < longest.length() && shortestPointer < shortest.length()) {
             char ch = longest.charAt(longestPointer);
             char otherCh = shortest.charAt(shortestPointer);
 
             if (ch != otherCh) {
-                if (hasModification) {
+                if (hasModification) { // допустима только одна модификация
                     return false;
                 }
 
                 hasModification = true;
 
                 longestPointer++;
-                if (!differentLength) {
+                if (!hasDifferentLength) { //кейс с перестановкой
                     shortestPointer++;
                 }
             } else {

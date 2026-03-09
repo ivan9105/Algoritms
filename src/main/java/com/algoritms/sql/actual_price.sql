@@ -65,17 +65,7 @@ INSERT INTO item_price (item_id, dt, price) VALUES (3, '2020-01-10', 50);
 INSERT INTO item_price (item_id, dt, price) VALUES (3, '2020-02-01', 55);
 INSERT INTO item_price (item_id, dt, price) VALUES (3, '2020-03-01', 100);
 
-with latest_price AS (SELECT * FROM
-    (
-        select
-        item_id,
-        dt,
-        price,
-        ROW_NUMBER() OVER (PARTITION BY item_id ORDER BY dt DESC) AS rn
-        FROM item_price
-        WHERE dt <= '2020-02-01'
-    ) WHERE rn = 1
-)
+with latest_price as (select r.* from (select item_id, dt, price, row_number() over (partition by item_id order by dt desc) as num
+from item_price where dt <= '2020-02-01') as r where r.num = 1)
 select p.*, i.name from latest_price p
-inner join item i
-on p.item_id = i.id;
+join item i on i.id = p.item_id

@@ -15,6 +15,8 @@ public class InfixExpression {
     private static String postfixToInfix(String expression) {
         var stack = new Stack<String>();
 
+        // кладем в stack числа до тех пор пока не встречается любой из знаков
+        // вынимаем из верхушки стек 2 числа и объединяем с оператором, получившееся значение ложим обратно в верхушку, до тех пор пока не пройдемся по всем символам
         for (char ch : expression.toCharArray()) {
             var current = SymbolType.valueOf(ch);
             if (current == SymbolType.NUMBER) {

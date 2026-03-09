@@ -10,6 +10,7 @@ public class HaystackAndNeedles {
         System.out.println("Needle index '" + needle + "' in haystack: " + haystack + " is " + findNeedle(haystack, needle));
     }
 
+    // если первый символ подстроки соотв. тому что мы ищем мы проверяем дальнейший массив подстроки
     private static int findNeedle(String haystack, String needle) {
         var haystackArr = haystack.toCharArray();
         var needleArr = needle.toCharArray();

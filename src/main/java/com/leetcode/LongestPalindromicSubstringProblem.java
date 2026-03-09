@@ -6,41 +6,14 @@ public class LongestPalindromicSubstringProblem {
     }
 
     static class ManachersAlgorithmSolution {
-        private boolean isDebug = true;
 
         /**
          * статья https://e-maxx.ru/algo/palindromes_count
+         * проходим в два проходы, для проверки двух типов полиндромоов
+         * нечетный порядок - уменьшаем left на 1, увиличиваем right на 1, right изначально = текущий элемент и ищем максимальное кол-во совпадений
+         * четный порядок - уменьшаем left на 1, увиличиваем right на 1, right изначально = текущий элемент + 1 и ищем максимальное кол-во совпадений
+         * итак по каждому символу
          *
-         * 2 прохода по нечетному и четному порядку
-         * нечетным порядком считаем проход через 0 позицию
-         * в данным случае "расширяем от центра начиная с первого элемента" для левой части и правой
-         * str.charAt(left) == str.charAt(right) при этом всегда равны
-         * по аналогии расширяем от символа выбранного уменьшая left / увеличивая right
-         * пока left >= 0, right > length
-         * сотвественно находим максимальное вхождение
-         *
-         * итерация четным порядком отличается только тем что мы по факту в качестве right используем исключтельно следующий элемент
-         * right = left + 1 по факту
-         * чтобы учесть кейсы когда у нас полиндромом являются группы одинаковых символов длиною четного порядка
-         * пример
-         *
-         * cbbd
-         *
-         * Итерация нечетным порядком
-         * в данном случае у нас str.charAt(left) == str.charAt(right) всегда равны
-         * соотвественно соседие элементы left-1 != right+1 всегда не равны
-         * итог палиндром будет первый символ c
-         *
-         * Итерация четным порядком
-         * 1 сабитерация left = c, right b, палиндром не найден
-         * 2 сабитерация left = b, right b, палиндром в данном случае является bb
-         * его длина = 2
-         * соотвественно
-         * start = 1, end = 3
-         *
-         * next sub iterations etc.
-         *
-         * в итоге получаем bb
          */
         public String longestPalindrome(String str) {
             if (str == null || str.length() <= 1) {
@@ -51,7 +24,7 @@ public class LongestPalindromicSubstringProblem {
             int max = 1;
             int length = str.length();
 
-            //odd length
+            //нечетный порядок, полиндром вида - bab
             for (int i = 0; i < length - 1; i++) {
                 int left = i, right = i;
                 while (left >= 0 && right < length) {
@@ -71,7 +44,7 @@ public class LongestPalindromicSubstringProblem {
                 }
             }
 
-            //even length
+            //четный порядок - палиндром вида dbbd
             for (int i = 0; i < length - 1; i++) {
                 int left = i, right = i + 1;
                 while (left >= 0 && right < length) {

@@ -8,6 +8,10 @@ public class BottleSort {
         sort(arr);
     }
 
+    // сортировка пузырьком
+    // худший случай n^2
+    // первый цикл по каждому элементу с начала
+    // второй цикл по каждому элементу > чем элемент первого цикла с конца
     private static void sort(int[] arr) {
         int size = arr.length;
 

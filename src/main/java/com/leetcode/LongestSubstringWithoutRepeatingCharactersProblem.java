@@ -15,15 +15,10 @@ public class LongestSubstringWithoutRepeatingCharactersProblem {
         System.out.println("Result: " + new DirectAccessTableSolution().lengthOfLongestSubstring("kwkerkk"));
     }
 
-
     /**
      *
      */
     static class DirectAccessTableSolution {
-
-        public int lengthOfLongestSubstring(String str) {
-            return lengthOfLongestSubstring(str, true);
-        }
 
         /**
          * Оптимизация алгоритма скользящего окна, уменьшение кол-ва повторений x2
@@ -33,62 +28,29 @@ public class LongestSubstringWithoutRepeatingCharactersProblem {
          * ед разница что теперь мы в качестве ключа исп порядкой номер (int) current char и индекс первого элемента начинается с 0
          * Так же образуем окна за за счет right - позиция внутреннего цикла, left - index повторения
          */
-        public int lengthOfLongestSubstring(String str, boolean isDebug) {
-            if (isDebug) {
-                System.out.println("Start search the length of the longest substring " + str);
-            }
+        public int lengthOfLongestSubstring(String str) {
+            var chars = new Integer[128];
 
-            Integer[] chars = new Integer[128];
+            var left = 0;
+            var current = 0;
 
-            int left = 0;
-            int right = 0;
+            var res = 0;
+            var length = str.length();
+            while (current < length) {
+                var ch = str.charAt(current);
 
-            int res = 0;
-            int length = str.length();
-            while (right < length) {
-                char r = str.charAt(right);
-
-                if (isDebug) {
-                    System.out.printf("Iteration right = %d, left = %d, current char = %s, substr = %s, arr = %s, res = %d %n",
-                            right, left, r, str.substring(right, length), toString(chars), res
-                    );
-                }
-
-                Integer index = chars[r];
-                if (index != null && index >= left && index < right) {
+                var index = chars[ch];
+                if (index != null && index >= left && index < current) {
                     left = index + 1;
-
-                    if (isDebug) {
-                        System.out.printf("Found repetition right = %d, left = %d, current char = %s, substr = %s, arr = %s, res = %d %n",
-                                right, left, r, str.substring(right, length), toString(chars), res
-                        );
-                    }
                 }
 
-                res = Math.max(res, right - left + 1);
+                res = Math.max(res, current - left + 1);
 
-                if (isDebug) {
-                    System.out.printf("Calculate max right = %d, left = %d, current char = %s, substr = %s, arr = %s, res = %d %n",
-                            right, left, r, str.substring(right, length), toString(chars), res
-                    );
-                }
-
-                chars[r] = right;
-                right++;
+                chars[ch] = current;
+                current++;
             }
 
             return res;
-        }
-
-        private static String toString(Integer[] arr) {
-            Map<Integer, Integer> resMap = new HashMap<>();
-            AtomicInteger counter = new AtomicInteger();
-            Arrays.stream(arr).forEach(it -> resMap.put(counter.incrementAndGet() - 1, it));
-            String result = resMap.entrySet().stream()
-                    .filter(it -> it.getValue() != null)
-                    .map(it -> format("(int) current ch: %d, Index: %d", it.getKey(), it.getValue()))
-                    .collect(joining("; "));
-            return !result.isBlank() ? result : "-";
         }
     }
 

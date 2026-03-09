@@ -40,19 +40,17 @@ public class BacktrackingAlgorithmExample {
         var result = new ArrayList<List<Integer>>();
 
         calculate(result, input, new ArrayList<>(), 0);
+        System.out.println(result);
     }
 
     private static void calculate(List<List<Integer>> subsets, List<Integer> input, List<Integer> output, Integer index) {
-        System.out.printf("Call calc, Index: %s, Input: %s, Output: %s %n", index, input, output);
-
         if (index == input.size()) {
-            System.out.printf("Add subset, Index: %s, Input: %s, Output: %s %n", index, input, output);
             subsets.add(output);
             return;
         }
-
+        // нельзя менять состояние output, index
+        // backtracking перебор все возможных значений
         calculate(subsets, input, new ArrayList<>(output), index + 1);
-
         output.add(input.get(index));
         calculate(subsets, input, new ArrayList<>(output), index + 1);
     }

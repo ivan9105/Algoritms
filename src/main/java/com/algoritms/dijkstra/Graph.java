@@ -3,7 +3,7 @@ package com.algoritms.dijkstra;
 import java.util.*;
 
 public class Graph {
-    private Set<Node> nodes = new HashSet<Node>();
+    private Set<Node> nodes = new HashSet<>();
 
     public void addNode(Node nodeA) {
         nodes.add(nodeA);
@@ -14,50 +14,52 @@ public class Graph {
     }
 
     public Graph calculateShortestPathFromSource(Graph graph, Node source) {
-        source.setDistance(0);
+        source.setDistance(0); //инициируем дистанцию
 
-        Set<Node> settledNodes = new HashSet<>();
-        Set<Node> unsettledNodes = new HashSet<>();
+        var visited = new HashSet<Node>();
+        var unvisited = new HashSet<Node>();
 
-        unsettledNodes.add(source);
+        unvisited.add(source); // инициируем обработку
+        while (!unvisited.isEmpty()) {
+            var lowestDistanceNode = getShortestDistanceAdjacent(unvisited); // пройтись по всем нодам получить не посещенную с минимальным значением
+            unvisited.remove(lowestDistanceNode);
 
-        while (unsettledNodes.size() != 0) {
-            Node currentNode = getLowestDistanceNode(unsettledNodes);
-            unsettledNodes.remove(currentNode);
-            for (Map.Entry<Node, Integer> adjacencyEntry : currentNode.getAdjacentNodes().entrySet()) {
-                Node adjacentNode = adjacencyEntry.getKey();
-                Integer edgeWeight = adjacencyEntry.getValue();
-                if (!settledNodes.contains(adjacentNode)) {
-                    calculateMinimumDistance(adjacentNode, edgeWeight, currentNode);
-                    unsettledNodes.add(adjacentNode);
+            for (var adjacencyEntry : lowestDistanceNode.getAdjacentNodes().entrySet()) { //bfs обход в ширину
+                var adjacentNode = adjacencyEntry.getKey();
+                if (!visited.contains(adjacentNode)) {
+                    var weight = adjacencyEntry.getValue();
+                    calculateShortestDistance(adjacentNode, weight, lowestDistanceNode);
+                    unvisited.add(adjacentNode);
                 }
             }
-            settledNodes.add(currentNode);
+
+            visited.add(lowestDistanceNode);
         }
 
         return graph;
     }
 
-    private Node getLowestDistanceNode(Set<Node> unsettledNodes) {
-        Node lowestDistanceNode = null;
-        int lowestDistance = Integer.MAX_VALUE;
-        for (Node node : unsettledNodes) {
-            int nodeDistance = node.getDistance();
-            if (nodeDistance < lowestDistance) {
-                lowestDistance = nodeDistance;
-                lowestDistanceNode = node;
+    private Node getShortestDistanceAdjacent(Set<Node> unvisited) {
+        Node result = null;
+        var lowestDistance = Integer.MAX_VALUE;
+        for (var node : unvisited) {
+            if (lowestDistance > node.getDistance()) {
+                lowestDistance = node.getDistance();
+                result = node;
             }
         }
-        return lowestDistanceNode;
+        return result;
     }
 
-    private void calculateMinimumDistance(Node evaluationNode, Integer edgeWeight, Node sourceNode) {
-        Integer sourceDistance = sourceNode.getDistance();
-        if (sourceDistance + edgeWeight < evaluationNode.getDistance()) {
-            evaluationNode.setDistance(sourceDistance + edgeWeight);
-            List<Node> shortestPath = new LinkedList<>(sourceNode.getShortestPath());
-            shortestPath.add(sourceNode);
-            evaluationNode.setShortestPath(shortestPath);
+    // к примеру мы уже сделали расчет до F он например 25 через B, но оказывается что через D до F добраться быстрее - 23 - дистанция до D + вес до F
+    // а F мы уже посетили, перезаписываем shortest path
+    private void calculateShortestDistance(Node adjacentNode, Integer weight, Node lowestDistanceNode) {
+        var lowestDistance = lowestDistanceNode.getDistance();
+        if (lowestDistance + weight < adjacentNode.getDistance()) {
+            adjacentNode.setDistance(lowestDistance + weight);
+            var shortestPath = new LinkedList<>(lowestDistanceNode.getShortestPath());
+            shortestPath.add(lowestDistanceNode);
+            adjacentNode.setShortestPath(shortestPath);
         }
     }
 }

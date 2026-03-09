@@ -70,7 +70,7 @@ public class ZigzagConversionProblem {
 
 
             var lastRow = numRows - 1;
-            int cycle = 2 * numRows - 2;
+            var cycle = 2 * numRows - 2; // кол-во колонок в результате
             var result = new StringBuilder();
             var arr = str.toCharArray();
 
@@ -103,18 +103,18 @@ public class ZigzagConversionProblem {
             }
         }
 
-        private static void fillInnerRow(int cycle, StringBuilder result, char[] arr, int i) {
+        private static void fillInnerRow(int cycle, StringBuilder result, char[] arr, int index) {
             int k = 0;
             int length = arr.length;
 
             while (true) {
-                int firstIndex = k * cycle + i;
+                int firstIndex = k * cycle + index;
                 if (firstIndex >= length) {
                     break;
                 }
 
                 result.append(arr[firstIndex]);
-                int secondIndex = (k + 1) * cycle - i;
+                int secondIndex = (k + 1) * cycle - index;
                 if (secondIndex >= length) {
                     break;
                 }

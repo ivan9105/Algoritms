@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MaximumProductOfWordLengths {
+
     public static void main(String[] args) {
         // решение через побитовую маску "|" - побитовое ИЛИ, "<<" - СДВИГ влево, "&" - побитовый И
         // сдвиг влево на какое то кол-во
@@ -37,14 +38,14 @@ public class MaximumProductOfWordLengths {
         for (int index = 0; index < length; index++) {
             var word = arr[index];
             for (char c : word.toCharArray()) {
-                masks[index] |= (1 << (c - 'a'));
+                masks[index] |= (1 << (c - 'a')); // ищем индекс символа в нашей битовой маске и применяем побитовое ИЛИ чтобы построить маску
             }
         }
 
         //n^2
         for (int index = 0; index < length - 1; index++) {
             for (int innerIndex = 0; innerIndex < length; innerIndex++) {
-                if ((masks[index] & masks[innerIndex]) == 0) {
+                if ((masks[index] & masks[innerIndex]) == 0) { // побитовая алгебра операция & если нет ни одного совпадения по битам возвращает 0
                     largest = Math.max(largest, arr[index].length() * arr[innerIndex].length());
                 }
             }

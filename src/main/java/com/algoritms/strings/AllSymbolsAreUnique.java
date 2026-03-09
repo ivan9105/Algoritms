@@ -10,6 +10,8 @@ public class AllSymbolsAreUnique {
         System.out.println("All symbols is: " + value + ", are unique: " + isAllSymbolsAreUnique(value));
     }
 
+    //важный момент размерность кодировки
+    //в алгоритме используется кэш
     private static boolean isAllSymbolsAreUnique(String value) {
         // 128 - all symbols in unicode 128 symbols range
         var exists_char = new boolean[128];

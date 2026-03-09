@@ -2,7 +2,7 @@
 --(
 --    id integer, -- ID сотрудника
 --    department_id integer, -- ID подразделения, в котором работает сотрудник
---    chief_flg boolean, -- флаг того, что сотрудник занимает руководящую позицию
+--    chief_flg integer, -- флаг того, что сотрудник занимает руководящую позицию
 --    birth_dt date -- дата рождения
 --)
 --
@@ -13,7 +13,7 @@ CREATE TABLE employee
 (
 id INT,
 department_id INT,
-chief_flg BIT(1),
+chief_flg INT,
 birth_dt DATE
 );
 
@@ -28,12 +28,10 @@ INSERT INTO employee (id, department_id, chief_flg, birth_dt) VALUES (5, 2, 0, '
 INSERT INTO employee (id, department_id, chief_flg, birth_dt) VALUES (6, 2, 0, '1934-12-03');
 INSERT INTO employee (id, department_id, chief_flg, birth_dt) VALUES (7, 2, 0, '1949-12-03');
 
-WITH chiefs_births AS (
-    SELECT MAX(birth_dt) as birth_dt, department_id FROM (SELECT * FROM employee WHERE chief_flg = 1)
-    GROUP BY department_id
-)
-SELECT e.* from employee e
-JOIN chiefs_births cb ON cb.department_id = e.department_id AND e.birth_dt < cb.birth_dt AND e.chief_flg = 0
+with chief_birthday as (select ch.department_id, max(ch.birth_dt) as birth_dt from (select * from employee where chief_flg = 1) as ch group by department_id)
+select * from employee e
+join chief_birthday ch on ch.department_id = e.department_id AND e.chief_flg = 0
+where e.birth_dt > ch.birth_dt
 
 SELECT e.* from employee e
 JOIN (SELECT MAX(birth_dt) as birth_dt, department_id FROM (SELECT * FROM employee WHERE chief_flg = 1)

@@ -6,10 +6,12 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import lombok.Builder;
 import lombok.Data;
@@ -29,15 +31,15 @@ public class DependencyGraph {
      * При.мер :
      * В вод:
      * проекты : а, Ь, с, d, е, f
-     * зависимости: (d, а), (Ь, f) , (d, Ь), (а, f), (с, d )
+     * зависимости: (d, а), (Ь, f) , (d, Ь), (а, f), (с, d)
      * Вывод:
-     * f, е , а, Ь, d , с
+     * c, e, d, a, b, f
      */
     public static void main(String[] args) {
         var graph = new Graph();
 
         // given
-        List<String> projects = List.of("a", "b", "c", "d", "e", "f", "g");
+        List<String> projects = List.of("a", "b", "c", "d", "e", "f");
         projects.forEach(graph::addNode);
 
         graph.addEdge("d", "a");
@@ -47,7 +49,7 @@ public class DependencyGraph {
         graph.addEdge("c", "d");
 
         calculateOrderProjectsSolutionOne(graph);
-        calculateOrderProjectsSolutionTwo(graph);
+        System.out.println(calculateOrderProjectsSolutionTwo(graph));
     }
 
     /**
@@ -66,20 +68,47 @@ public class DependencyGraph {
 
     /**
      * Использование DFS (в глубину)
-     *
+     * <p>
      * берем случайную вершину - пробуем сделать поиск в глубину упираемся в посл элемент
      * этот элемент по факту можно добавить в конец результирующего списка и не учитывать больше в обходе
      * далее аналогичное действие -> последний элемент добавляется на позицию результирующего списка length - sizeOf(заполненных элементов)
      * и до тех пор пока не пройдем весь граф
-     *
+     * <p>
      * циклическая зависимость - можно реализовать через состояние - node + state
      * например перед обработкой помечать каким то признаком (в обработке)
      * и если мы при обработке элемента А напарываемся на элемент Б по факту в том же статусе - нужно кидать ошибку так как это цикл
      */
-    private static List<String> calculateOrderProjectsSolutionTwo(Graph graph) {
-        var result = new ArrayList<String>();
+    private static Set<String> calculateOrderProjectsSolutionTwo(Graph graph) {
+        var result = new LinkedHashSet<String>();
 
-        //TODO
+        var rootNodes = graph.getNodes().values().stream().filter(it -> it.isRoot).collect(toList());
+        rootNodes.forEach(rootNode -> result.add(rootNode.value));
+
+        for (var rootNode : rootNodes) {
+            var stack = new Stack<Node>();
+            stack.push(rootNode);
+
+            var passed = new ArrayList<Node>();
+
+            while (!stack.isEmpty()) {
+                var current = stack.pop();
+
+                if (!passed.contains(current)) {
+                    passed.add(current);
+                }
+
+                for (var adjacent : current.getAdjacent()) {
+                    if (current.equals(adjacent)) {
+                        throw new IllegalStateException(format("В графе циклическая ссылка: %s", adjacent.value));
+                    }
+
+                    if (!passed.contains(adjacent)) {
+                        stack.push(adjacent);
+                        result.add(adjacent.value);
+                    }
+                }
+            }
+        }
 
         return result;
     }
@@ -102,8 +131,12 @@ public class DependencyGraph {
         public void addNode(String target, List<String> adjacent) {
             var targetNode = findOrCreateNode(target);
 
-            if (adjacent != null && adjacent.size() > 0) {
-                adjacent.forEach(it -> targetNode.getAdjacent().add(findOrCreateNode(it)));
+            if (adjacent != null && !adjacent.isEmpty()) {
+                adjacent.forEach(it -> {
+                    var adjacentNode = findOrCreateNode(it);
+                    adjacentNode.setRoot(false);
+                    targetNode.getAdjacent().add(adjacentNode);
+                });
             }
         }
 
@@ -140,12 +173,12 @@ public class DependencyGraph {
 
     @Getter
     @Setter
-    @EqualsAndHashCode(exclude = "adjacent")
+    @EqualsAndHashCode(exclude = {"adjacent", "isRoot"})
     @RequiredArgsConstructor
-    @Builder
     private static class Node {
         private final String value;
         private final Set<Node> adjacent;
+        private boolean isRoot = true;
 
         @Override
         public String toString() {
